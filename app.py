@@ -104,12 +104,13 @@ if selected == "Data Entry":
             e_costs = {e_cost: st.session_state[e_cost] for e_cost in e_costs}
             w_usages = {w_usage: st.session_state[w_usage] for w_usage in w_usages}
             w_costs = {w_cost: st.session_state[w_cost] for w_cost in w_costs}
-            db.insert_period(period, e_usages, e_costs, w_usages, w_costs, comment)
+            insert_period(period, e_usages, e_costs, w_usages, w_costs, comment)
             st.success("Data saved!")
 
 # --- DATA VISUALISATION ---
 if selected == "Data Visualization":
-    st.header("Utilities Summary")
+    st.header("Summary")
+    st.subheader("Total Cost & Usage:")
     entries = fetch_all_periods()
 
     total_e_usage = sum([sum(entry['e_usage'].values()) for entry in entries])
@@ -126,18 +127,18 @@ if selected == "Data Visualization":
     col3.metric("Total Costs:", f"{'RM'}{total_cost:,.2f}")
     
     col1, col2, col3 = st.columns(3)
-    col1.metric("Electricity Usage:", f"{total_e_usage} {'kWh'}")
-    col2.metric("Water Usage:", f"{total_w_usage} {'m3'}")
+    col1.metric("Electricity Usage:", f"{total_e_usage:,} {'kWh'}")
+    col2.metric("Water Usage:", f"{total_w_usage:,} {'m3'}")
     
     with st.expander("Click To View Utilities Rates:"):
         col1, col2 = st.columns(2)
         col1.metric("Electricity Rate:", f"{'RM'}{e_rate:,.2f} {'kWh'}")
         col2.metric("Water Rate:", f"{'RM'}{w_rate:,.2f} {'m3'}")
 
-    st.header("Utilities Graphs")
+    st.subheader("Graphs:")
 
     fig_1 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-    fig_1.add_trace(go.Bar(x = ['Electricity','Water'], y = [total_e_cost,total_w_cost],name='',text=[total_e_cost,total_w_cost]))
+    fig_1.add_trace(go.Bar(x = ['Electricity','Water'], y = [total_e_cost,total_w_cost],name=''))
     fig_1.update_layout(title_text='Total Utilities Cost (RM)',title_x=0.5,
         font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
     fig_1.update_annotations(font=dict(family="Helvetica", size=10))
@@ -145,7 +146,7 @@ if selected == "Data Visualization":
     fig_1.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
 
     fig_2 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-    fig_2.add_trace(go.Bar(x = ['Electricity','Water'], y = [total_e_usage,total_w_usage],name='',text=[total_e_usage,total_w_usage]))
+    fig_2.add_trace(go.Bar(x = ['Electricity','Water'], y = [total_e_usage,total_w_usage],name=''))
     fig_2.update_layout(title_text='Total Utilities Usage (kWh & m3)',title_x=0.5,
         font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
     fig_2.update_annotations(font=dict(family="Helvetica", size=10))
