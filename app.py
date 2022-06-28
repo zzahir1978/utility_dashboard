@@ -156,19 +156,3 @@ if selected == "Data Visualization":
     left_column, right_column = st.columns(2)
     right_column.plotly_chart(fig_1, use_container_width=True)
     left_column.plotly_chart(fig_2, use_container_width=True)
-
-            # Create sankey chart
-            #label = list(usages.keys()) + ["Total usage"] + list(costs.keys())
-            #source = list(range(len(usages))) + [len(usages)] * len(costs)
-            #target = [len(usages)] * len(usages) + [label.index(costs) for cost in costs.keys()]
-            #value = list(usages.values()) + list(costs.values())
-
-            # Data to dict, dict to sankey
-            #link = dict(source=source, target=target, value=value)
-            #node = dict(label=label, pad=20, thickness=30, color="#E694FF")
-            #data = go.Sankey(link=link, node=node)
-
-            # Plot it!
-            #fig = go.Figure(data)
-            #fig.update_layout(margin=dict(l=0, r=0, t=5, b=5))
-            #st.plotly_chart(fig, use_container_width=True)
