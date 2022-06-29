@@ -48,7 +48,7 @@ def get_period(period):
     return db.get(period)
 
 def get_all_periods():
-    items = db.fetch_all_periods()
+    items = fetch_all_periods()
     periods = [item["key"] for item in items]
     return periods
     
@@ -65,8 +65,8 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # --- NAVIGATION MENU ---
 selected = option_menu(
     menu_title=None,
-    options=["Data Visualization","Data Entry"],
-    icons=["bar-chart-fill","pencil-fill"] ,  # https://icons.getbootstrap.com/
+    options=["Data Visualization","Data Entry","Data Query"],
+    icons=["file-bar-graph","pencil-fill","search"] ,  # https://icons.getbootstrap.com/
     orientation="horizontal",
 )
 
@@ -156,3 +156,32 @@ if selected == "Data Visualization":
     left_column, right_column = st.columns(2)
     right_column.plotly_chart(fig_1, use_container_width=True)
     left_column.plotly_chart(fig_2, use_container_width=True)
+
+if selected == "Data Query":
+    st.header("Data Query")
+    with st.form("saved_periods"):
+        period = st.selectbox("Select Period:", get_all_periods())
+        submitted = st.form_submit_button("Click:")
+        if submitted:
+            # Get data from database
+            period_data = get_period(period)
+            comment = period_data.get("comment")
+            e_usages = period_data.get("e_usage")
+            e_costs = period_data.get("e_cost")
+            w_usages = period_data.get("w_usage")
+            w_costs = period_data.get("w_cost")
+
+            # Create metrics
+            total_e_costs = sum(e_costs.values())
+            total_e_usages = sum(e_usages.values())
+            total_w_costs = sum(w_costs.values())
+            total_w_usages = sum(w_usages.values())
+            total_monthly = total_e_costs + total_w_costs
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Total Electricity Cost", f"{'RM'}{total_e_costs:,.2f}")
+            col2.metric("Total Water Cost", f"{'RM'}{total_w_costs:,.2f}")
+            col3.metric("Total Costs", f"{'RM'}{total_monthly:,.2f}")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Total Electricity Usage", f"{total_e_usages:,.0f}{'kWh'}")
+            col2.metric("Total Water Usage", f"{total_w_usages:,.0f}{'m3'}")
+            st.text(f"Comment: {comment}")
