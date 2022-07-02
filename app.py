@@ -11,7 +11,7 @@ import json
 import pandas as pd
 from collections import Counter
 import os
-#import database as db  # local import
+#import database as db                          # local import
 
 # ---STREAMLIT SECRET SETTINGs---
 # Everything is accessible via the st.secrets dict:
@@ -126,6 +126,7 @@ if authentication_status:
     df = pd.concat([df,df_1],axis=1)
     df = df[['digi_ani','digi_zahir','e_cost','e_usage','streamyx','w_cost','w_usage',0,1]]
     df = df.rename(columns={0:'year',1:'month'})
+    df_2020 = df[df.year == '2020']
     df_2021 = df[df.year == '2021']
     df_2022 = df[df.year == '2022']
     df_2023 = df[df.year == '2023']
@@ -155,6 +156,16 @@ if authentication_status:
     df_streamyx_2021 = df_2021['streamyx'].map(Counter).groupby(df['year']).sum().reset_index()
     df_streamyx_2021 = df_streamyx_2021['streamyx'].apply(lambda x: x.get('RM_s')).dropna()
     df_streamyx_2021 = df_streamyx_2021.at[df_streamyx_2021.index[0]]
+    # Year 2020
+    df_ecost_2020 = df_2020['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_ecost_2020 = df_ecost_2020['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
+    df_ecost_2020 = df_ecost_2020.at[df_ecost_2020.index[0]]
+    df_wcost_2020 = df_2020['w_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_wcost_2020 = df_wcost_2020['w_cost'].apply(lambda x: x.get('RM_w')).dropna()
+    df_wcost_2020 = df_wcost_2020.at[df_wcost_2020.index[0]]
+    df_streamyx_2020 = df_2020['streamyx'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_streamyx_2020 = df_streamyx_2020['streamyx'].apply(lambda x: x.get('RM_s')).dropna()
+    df_streamyx_2020 = df_streamyx_2020.at[df_streamyx_2020.index[0]]
     
     # --- DATA ENTRY ---
     if selected == "Data Entry":
@@ -304,6 +315,27 @@ if authentication_status:
             fig_2021.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
             st.plotly_chart(fig_2021, use_container_width=True)
+        
+        with st.expander("Click to View Year 2020 Data:"):
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2020:,.2f}")
+            col2.metric("Water Cost:", f"RM{df_wcost_2020:,.2f}")
+            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2020:,.2f}")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Total Costs:", f"RM{(df_ecost_2020+df_wcost_2020+df_streamyx_2020):,.2f}")
+            # Graph Yr 2020
+            fig_2020 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_2020.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2020],name=''))
+            fig_2020.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2021],name=''))
+            fig_2020.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2020],name=''))
+            fig_2020.update_layout(title_text='Total Utilities Cost Year 2020 (RM)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False)
+            fig_2020.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_2020.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2020.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Chart Presentation
+            st.plotly_chart(fig_2020, use_container_width=True)
 
     # --- DATA QUERY ---
     if selected == "Data Query":
