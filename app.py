@@ -167,7 +167,7 @@ if authentication_status:
             "---"
             with st.expander("Electricity Usage"):
                 for e_usage in e_usages:
-                    st.number_input(f"{e_usage}:", min_value=0, format="%i", key=e_usage)
+                    st.number_input(f"{e_usage}:", min_value=0, format="%i", step=10, key=e_usage)
             with st.expander("Electricity Cost"):
                 for e_cost in e_costs:
                     st.number_input(f"{e_cost}:", min_value=0, format="%i", step=10, key=e_cost)
