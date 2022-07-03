@@ -108,7 +108,7 @@ if authentication_status == None:
 if authentication_status:
     #st.subheader(f"Welcome {name}")
     authenticator.logout("Logout", "sidebar")
-    st.sidebar.title(f"Welcome {name}")
+    st.subheader(f"Welcome {name}")
 
     # --- NAVIGATION MENU ---
     selected = option_menu(
