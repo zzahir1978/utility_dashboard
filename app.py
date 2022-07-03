@@ -31,11 +31,11 @@ digi_anis = ["RM_d2"]
 streamyxs = ["RM_s"]
 currency = "RM"
 page_title = "Utilities Dashboard"
-page_icon = ":bar_chart:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+page_icon = ":ledger:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 layout = "centered"     # alternatively used "wide"
 # --------------------------------------
 
-#st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
+st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_icon + " " + page_title)
 
 # --- HIDE STREAMLIT STYLE ---
