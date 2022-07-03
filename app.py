@@ -245,29 +245,37 @@ if authentication_status:
         col1.metric("Electricity Usage:", f"{total_e_usage:,.0f}kWh")
         col2.metric("Water Usage:", f"{total_w_usage:,.0f}m3")
         col3.metric("Total Costs:", f"RM{total_cost:,.2f}")
-        
+
         with st.expander("Click To View Utilities Rates:"):
             col1, col2 = st.columns(2)
             col1.metric("Electricity Rate:", f"RM{(total_e_cost/total_e_usage):,.2f}")
             col2.metric("Water Rate:", f"RM{(total_w_cost/total_w_usage):,.2f}")
         
         st.subheader("Graphs:")
-
+        # BAR CHART
         fig_1 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
         fig_1.add_trace(go.Bar(x = ['Electricity'], y = [total_e_cost],name=''))
         fig_1.add_trace(go.Bar(x = ['Water'], y = [total_w_cost],name=''))
         fig_1.add_trace(go.Bar(x = ['DiGi Zahir'], y = [total_digi_zahir_cost],name=''))
         fig_1.add_trace(go.Bar(x = ['DiGi Ani'], y = [total_digi_ani_cost],name=''))
         fig_1.add_trace(go.Bar(x = ['Streamyx'], y = [total_streamyx_cost],name=''))
-        fig_1.update_layout(title_text='Total Utilities Cost (RM)',title_x=0.5,
-            font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-            yaxis_title=None,showlegend=False)
+        fig_1.update_layout(title_text='Total Utilities Cost (RM)',title_x=0.5, height=350,
+            font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",
+            yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
         fig_1.update_annotations(font=dict(family="Helvetica", size=10))
         fig_1.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
         fig_1.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-
+        # PIE CHART
+        fig_pie_main = make_subplots(specs=[[{"type": "domain"}]])
+        fig_pie_main.add_trace(go.Pie(
+            values=[total_e_cost,total_w_cost,total_digi_zahir_cost,total_digi_ani_cost,total_streamyx_cost],
+            labels=['Electricity','Water','DiGi Zahir','Digi Ani','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+        fig_pie_main.update_annotations(font=dict(family="Helvetica", size=10))
+        fig_pie_main.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
         # Chart Presentation
-        st.plotly_chart(fig_1, use_container_width=True)
+        col1, col2 = st.columns(2)
+        col1.plotly_chart(fig_1, use_container_width=True)
+        col2.plotly_chart(fig_pie_main, use_container_width=True)
         
         st.subheader("Historical Data:")
         with st.expander("Click to View Year 2022 Data:"):
