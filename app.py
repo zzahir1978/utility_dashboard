@@ -31,8 +31,8 @@ digi_anis = ["RM_d2"]
 streamyxs = ["RM_s"]
 currency = "RM"
 page_title = "Utilities Dashboard"
-page_icon = ":ledger:"  # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
-layout = "centered"     # alternatively used "wide"
+page_icon = ":ledger:"                      # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+layout = "centered"                         # alternatively used "wide"
 # --------------------------------------
 
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
@@ -55,8 +55,8 @@ months = list(calendar.month_name[1:])
 
 # --- INFORMATION DATABASE INTERFACE ---
 DETA_KEY = "c0jo61nr_BhSm5qHprUP75vRSdEmumYfoS1KMCtQW"
-deta = Deta(DETA_KEY)                       # Initialize with a project key
-db = deta.Base("utilities_reports")         # This is how to create/connect a database
+deta = Deta(DETA_KEY)                                   # Initialize with a project key
+db = deta.Base("utilities_reports")                     # This is how to create/connect a database
 
 def insert_period(period, e_usages, e_costs, w_usages, w_costs, digi_zahirs, digi_anis, streamyxs, comment):
     """Returns the user on a successful user creation, otherwise raises and error"""
@@ -80,8 +80,8 @@ def get_all_periods():
 # --- AUTHENTICATION DATABASE INTERFACE ---
 
 DETA_KEY_1 = "c0jo61nr_P1wSYy8XFqjnwgyeWUXqU635PWYK4A85"
-deta_1 = Deta(DETA_KEY_1)               # Initialize with a project key
-db_1 = deta_1.Base("users_db")          # This is how to create/connect a database
+deta_1 = Deta(DETA_KEY_1)                           # Initialize with a project key
+db_1 = deta_1.Base("users_db")                      # This is how to create/connect a database
 
 def fetch_all_users():
     """Returns a dict of all users"""
@@ -95,7 +95,7 @@ usernames = [user["key"] for user in users]
 names = [user["name"] for user in users]
 hashed_passwords = [user["password"] for user in users]
 
-authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "sales_dashboard", "abcdef", cookie_expiry_days=30)
+authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "utility_dashboard", "abcdef", cookie_expiry_days=30)
 
 name, authentication_status, username = authenticator.login("Login", "main")
 
@@ -113,8 +113,8 @@ if authentication_status:
     # --- NAVIGATION MENU ---
     selected = option_menu(
         menu_title=None,
-        options=["Data Visualization","Data Entry","Data Query"],
-        icons=["file-bar-graph","pencil-fill","search"] ,           # https://icons.getbootstrap.com/
+        options=["Data Overview","Data Entry","Data Query","Data Library"],
+        icons=["globe","pencil-fill","search","archive"] ,                           # https://icons.getbootstrap.com/
         orientation="horizontal",
     )
 
@@ -251,7 +251,7 @@ if authentication_status:
                 st.success("Data saved!")
 
     # --- DATA VISUALISATION ---
-    if selected == "Data Visualization":
+    if selected == "Data Overview":
         st.header("Summary")
         st.subheader("Total Cost & Usage:")
 
@@ -310,7 +310,46 @@ if authentication_status:
         col1.plotly_chart(fig_1, use_container_width=True)
         col2.plotly_chart(fig_pie_main, use_container_width=True)
         
-        st.subheader("Historical Data:")
+        st.subheader("Annual Data By Type of Utility:")
+
+        with st.expander("Electricity:"):
+            # Graph Electricity
+            fig_yearly_e = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_yearly_e.add_trace(go.Bar(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
+                y = [df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],name=''))
+            fig_yearly_e.add_trace(go.Scatter(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
+                y = [df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],name='',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_yearly_e.update_layout(title_text='Annual Electricity Cost (RM)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False)
+            fig_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_yearly_e.update_xaxes(title_text='Year', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_e.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Chart Presentation
+            st.plotly_chart(fig_yearly_e, use_container_width=True)
+
+        with st.expander("Water:"):
+            # Graph Water
+            fig_yearly_w = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_yearly_w.add_trace(go.Bar(x = ['2019','2020','2021','2022'], 
+                y = [df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],name=''))
+            fig_yearly_w.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
+                y = [df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],name='',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_yearly_w.update_layout(title_text='Annual Water Cost (RM)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False)
+            fig_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_yearly_w.update_xaxes(title_text='Year', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_w.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Chart Presentation
+            st.plotly_chart(fig_yearly_w, use_container_width=True)                        
+    
+    # --- DATA VISUALISATION ---
+    if selected == "Data Library":
+        st.header("Historical Data By Year")
+
         with st.expander("Click to View Year 2022 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2022:,.2f}")
@@ -400,8 +439,6 @@ if authentication_status:
         with st.expander("Click to View Year 2018 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2018:,.2f}")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2018):,.2f}")
             # Graph Yr 2018
             fig_2018 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2018.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2018],name=''))
@@ -417,8 +454,6 @@ if authentication_status:
         with st.expander("Click to View Year 2017 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2017:,.2f}")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2017):,.2f}")
             # Graph Yr 2017
             fig_2017 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2017.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2017],name=''))
@@ -434,8 +469,6 @@ if authentication_status:
         with st.expander("Click to View Year 2016 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2016:,.2f}")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2016):,.2f}")
             # Graph Yr 2016
             fig_2016 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2016.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2016],name=''))
@@ -451,8 +484,6 @@ if authentication_status:
         with st.expander("Click to View Year 2015 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2015:,.2f}")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2015):,.2f}")
             # Graph Yr 2015
             fig_2015 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2015.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2015],name=''))
@@ -468,8 +499,6 @@ if authentication_status:
         with st.expander("Click to View Year 2014 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2014:,.2f}")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2014):,.2f}")
             # Graph Yr 2014
             fig_2014 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2014.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2014],name=''))
