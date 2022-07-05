@@ -108,8 +108,9 @@ if authentication_status == None:
 if authentication_status:
     #st.subheader(f"Welcome {name}")
     authenticator.logout("Logout", "sidebar")
-    st.subheader(f"Welcome {name}")
-
+    st.sidebar.subheader(f"User ID: {username}")
+    st.sidebar.subheader(f"User Name: {name}")
+    
     # --- NAVIGATION MENU ---
     selected = option_menu(
         menu_title=None,
@@ -279,11 +280,6 @@ if authentication_status:
         col2.metric("Water Usage:", f"{total_w_usage:,.0f}m3")
         col3.metric("Total Costs:", f"RM{total_cost:,.2f}")
 
-        with st.expander("Click To View Utilities Rates:"):
-            col1, col2 = st.columns(2)
-            col1.metric("Electricity Rate:", f"RM{(total_e_cost/total_e_usage):,.2f}")
-            col2.metric("Water Rate:", f"RM{(total_w_cost/total_w_usage):,.2f}")
-        
         st.subheader("Graphs:")
         # BAR CHART
         fig_1 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
@@ -296,7 +292,7 @@ if authentication_status:
             font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",
             yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
         fig_1.update_annotations(font=dict(family="Helvetica", size=10))
-        fig_1.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+        fig_1.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
         fig_1.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
         # PIE CHART
         fig_pie_main = make_subplots(specs=[[{"type": "domain"}]])
@@ -309,6 +305,11 @@ if authentication_status:
         col1, col2 = st.columns(2)
         col1.plotly_chart(fig_1, use_container_width=True)
         col2.plotly_chart(fig_pie_main, use_container_width=True)
+
+        with st.expander("Utilities Rates:"):
+            col1, col2 = st.columns(2)
+            col1.metric("Electricity Rate:", f"RM{(total_e_cost/total_e_usage):,.2f}")
+            col2.metric("Water Rate:", f"RM{(total_w_cost/total_w_usage):,.2f}")
         
         st.subheader("Annual Data By Type of Utility:")
 
@@ -352,9 +353,9 @@ if authentication_status:
 
         with st.expander("Click to View Year 2022 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2022:,.2f}")
-            col2.metric("Water Cost:", f"RM{df_wcost_2022:,.2f}")
-            col3.metric("Total Costs:",f"RM{(df_ecost_2022+df_wcost_2022+df_dg_zahir_2022+df_dg_ani_2022+df_streamyx_2022):,.2f}")
+            col1.metric("Total Costs:",f"RM{(df_ecost_2022+df_wcost_2022+df_dg_zahir_2022+df_dg_ani_2022+df_streamyx_2022):,.2f}")
+            col2.metric("Electricity Cost:", f"RM{df_ecost_2022:,.2f}")
+            col3.metric("Water Cost:", f"RM{df_wcost_2022:,.2f}")
             col1, col2, col3 = st.columns(3)
             col1.metric("DiGi Zahir Cost:", f"RM{df_dg_zahir_2022:,.2f}")
             col2.metric("DiGi Ani Cost:", f"RM{df_dg_ani_2022:,.2f}")
@@ -366,14 +367,25 @@ if authentication_status:
             fig_2022.add_trace(go.Bar(x = ['DiGi Zahir'], y = [df_dg_zahir_2022],name=''))
             fig_2022.add_trace(go.Bar(x = ['DiGi Ani'], y = [df_dg_ani_2022],name=''))
             fig_2022.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2022],name=''))
-            fig_2022.update_layout(title_text='Total Utilities Cost Year 2022 (RM)',title_x=0.5,
+            fig_2022.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2022.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2022.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2022.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2022.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART
+            fig_pie_2022 = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_2022.add_trace(go.Pie(
+                values=[df_ecost_2022, df_wcost_2022, df_dg_zahir_2022, df_dg_ani_2022, df_streamyx_2022],
+                labels=['Electricity','Water','DiGi Zahir','Digi Ani','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_2022.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_2022.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            st.plotly_chart(fig_2022, use_container_width=True)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_2022, use_container_width=True)
+            col2.plotly_chart(fig_pie_2022, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_2022, use_container_width=True)
         
         with st.expander("Click to View Year 2021 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -387,14 +399,25 @@ if authentication_status:
             fig_2021.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2021],name=''))
             fig_2021.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2021],name=''))
             fig_2021.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2021],name=''))
-            fig_2021.update_layout(title_text='Total Utilities Cost Year 2021 (RM)',title_x=0.5,
+            fig_2021.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2021.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2021.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2021.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2021.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART
+            fig_pie_2021 = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_2021.add_trace(go.Pie(
+                values=[df_ecost_2021, df_wcost_2021, df_streamyx_2021],
+                labels=['Electricity','Water','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_2021.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_2021.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            st.plotly_chart(fig_2021, use_container_width=True)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_2021, use_container_width=True)
+            col2.plotly_chart(fig_pie_2021, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_2021, use_container_width=True)
         
         with st.expander("Click to View Year 2020 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -408,33 +431,54 @@ if authentication_status:
             fig_2020.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2020],name=''))
             fig_2020.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2020],name=''))
             fig_2020.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2020],name=''))
-            fig_2020.update_layout(title_text='Total Utilities Cost Year 2020 (RM)',title_x=0.5,
+            fig_2020.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2020.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2020.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2020.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2020.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART
+            fig_pie_2020 = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_2020.add_trace(go.Pie(
+                values=[df_ecost_2020, df_wcost_2020, df_streamyx_2020],
+                labels=['Electricity','Water','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_2020.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_2020.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            st.plotly_chart(fig_2020, use_container_width=True)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_2020, use_container_width=True)
+            col2.plotly_chart(fig_pie_2020, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_2020, use_container_width=True)
         
         with st.expander("Click to View Year 2019 Data:"):
             col1, col2, col3 = st.columns(3)
             col1.metric("Electricity Cost:", f"RM{df_ecost_2019:,.2f}")
             col2.metric("Water Cost:", f"RM{df_wcost_2019:,.2f}")
-            col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2019+df_wcost_2019):,.2f}")
+            col3.metric("Total Costs:", f"RM{(df_ecost_2019+df_wcost_2019):,.2f}")
             # Graph Yr 2019
             fig_2019 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2019.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2019],name=''))
             fig_2019.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2019],name=''))
-            fig_2019.update_layout(title_text='Total Utilities Cost Year 2019 (RM)',title_x=0.5,
+            fig_2019.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2019.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2019.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2019.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2019.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART
+            fig_pie_2019 = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_2019.add_trace(go.Pie(
+                values=[df_ecost_2019, df_wcost_2019],
+                labels=['Electricity','Water'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_2019.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_2019.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            st.plotly_chart(fig_2019, use_container_width=True)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_2019, use_container_width=True)
+            col2.plotly_chart(fig_pie_2019, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_2019, use_container_width=True)
         
         with st.expander("Click to View Year 2018 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -442,11 +486,11 @@ if authentication_status:
             # Graph Yr 2018
             fig_2018 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2018.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2018],name=''))
-            fig_2018.update_layout(title_text='Total Utilities Cost Year 2018 (RM)',title_x=0.5,
+            fig_2018.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2018.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2018.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2018.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2018.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
             st.plotly_chart(fig_2018, use_container_width=True)
@@ -457,11 +501,11 @@ if authentication_status:
             # Graph Yr 2017
             fig_2017 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2017.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2017],name=''))
-            fig_2017.update_layout(title_text='Total Utilities Cost Year 2017 (RM)',title_x=0.5,
+            fig_2017.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2017.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2017.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2017.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2017.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
             st.plotly_chart(fig_2017, use_container_width=True)
@@ -472,11 +516,11 @@ if authentication_status:
             # Graph Yr 2016
             fig_2016 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2016.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2016],name=''))
-            fig_2016.update_layout(title_text='Total Utilities Cost Year 2016 (RM)',title_x=0.5,
+            fig_2016.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2016.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2016.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2016.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2016.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
             st.plotly_chart(fig_2016, use_container_width=True)
@@ -487,11 +531,11 @@ if authentication_status:
             # Graph Yr 2015
             fig_2015 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2015.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2015],name=''))
-            fig_2015.update_layout(title_text='Total Utilities Cost Year 2015 (RM)',title_x=0.5,
+            fig_2015.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2015.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2015.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2015.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2015.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
             st.plotly_chart(fig_2015, use_container_width=True)
@@ -502,11 +546,11 @@ if authentication_status:
             # Graph Yr 2014
             fig_2014 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2014.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2014],name=''))
-            fig_2014.update_layout(title_text='Total Utilities Cost Year 2014 (RM)',title_x=0.5,
+            fig_2014.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
-                yaxis_title=None,showlegend=False)
+                yaxis_title=None,showlegend=False, height=350)
             fig_2014.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2014.update_xaxes(title_text='Utility', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_2014.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_2014.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
             st.plotly_chart(fig_2014, use_container_width=True)
