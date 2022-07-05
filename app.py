@@ -6,6 +6,7 @@ import plotly.express as px                     # pip install plotly-express
 from plotly.subplots import make_subplots
 import streamlit as st                          # pip install streamlit
 from streamlit_option_menu import option_menu   # pip install streamlit-option-menu
+import streamlit.components.v1 as components
 import streamlit_authenticator as stauth        # pip install streamlit-authenticator
 import json
 import pandas as pd
@@ -110,6 +111,7 @@ if authentication_status:
     authenticator.logout("Logout", "sidebar")
     st.sidebar.subheader(f"User ID: {username}")
     st.sidebar.subheader(f"User Name: {name}")
+    
     
     # --- NAVIGATION MENU ---
     selected = option_menu(
@@ -345,7 +347,18 @@ if authentication_status:
             fig_yearly_w.update_xaxes(title_text='Year', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_yearly_w.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            st.plotly_chart(fig_yearly_w, use_container_width=True)                        
+            st.plotly_chart(fig_yearly_w, use_container_width=True)    
+    st.write("---")
+    components.html(
+        """
+        <script src="https://code.iconify.design/2/2.2.1/iconify.min.js"></script>
+        <div style="text-align:center">
+        <p style="font-family:verdana">Powered By:</p>
+        <span class="iconify" data-icon="logos:python"></span> <span class="iconify" data-icon="simple-icons:pandas"></span> <span class="iconify" data-icon="simple-icons:plotly"></span> <span class="iconify" data-icon="icon-park:github"></span> <span class="iconify" data-icon="logos:github"></span> <span class="iconify" data-icon="simple-icons:streamlit"></span>
+        <p style="font-family:verdana">zahiruddin.zahidanishah<span class="iconify" data-icon="icon-park:at-sign"></span>2022</p>
+        </div>
+        """
+        )                    
     
     # --- DATA VISUALISATION ---
     if selected == "Data Library":
