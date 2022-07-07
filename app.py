@@ -323,14 +323,25 @@ if authentication_status:
             fig_yearly_e.add_trace(go.Scatter(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
                 y = [df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],name='',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_yearly_e.update_layout(title_text='Annual Electricity Cost (RM)',title_x=0.5,
+            fig_yearly_e.update_layout(title_text='Annual Electricity Cost (RM)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False)
             fig_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_yearly_e.update_xaxes(title_text='Year', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_e.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_yearly_e.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART
+            fig_pie_yearly_e = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_yearly_e.add_trace(go.Pie(
+                values=[df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],
+                labels=['2014','2015','2016','2017','2018','2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_e.update_layout(height=350,showlegend=False,title_text='Annual Electricity Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            st.plotly_chart(fig_yearly_e, use_container_width=True)
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_yearly_e, use_container_width=True)
+            col2.plotly_chart(fig_pie_yearly_e, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_yearly_e, use_container_width=True)
 
         with st.expander("Water:"):
             # Graph Water
@@ -340,14 +351,25 @@ if authentication_status:
             fig_yearly_w.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
                 y = [df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],name='',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_yearly_w.update_layout(title_text='Annual Water Cost (RM)',title_x=0.5,
+            fig_yearly_w.update_layout(title_text='Annual Water Cost (RM)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False)
             fig_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_yearly_w.update_xaxes(title_text='Year', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_w.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             fig_yearly_w.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART
+            fig_pie_yearly_w = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_yearly_w.add_trace(go.Pie(
+                values=[df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],
+                labels=['2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_w.update_layout(height=350,showlegend=False,title_text='Annual Water Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            st.plotly_chart(fig_yearly_w, use_container_width=True)    
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_yearly_w, use_container_width=True)
+            col2.plotly_chart(fig_pie_yearly_w, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_yearly_w, use_container_width=True)    
     st.write("---")
     components.html(
         """
@@ -360,7 +382,7 @@ if authentication_status:
         """
         )                    
     
-    # --- DATA VISUALISATION ---
+    # --- DATA LIBRARY ---
     if selected == "Data Library":
         st.header("Historical Data By Year")
 
