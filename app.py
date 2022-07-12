@@ -112,7 +112,6 @@ if authentication_status:
     st.sidebar.subheader(f"User ID: {username}")
     st.sidebar.subheader(f"User Name: {name}")
     
-    
     # --- NAVIGATION MENU ---
     selected = option_menu(
         menu_title=None,
@@ -614,5 +613,3 @@ if authentication_status:
                 col1.metric("Total Electricity Usage", f"{month_e_usages:,.0f}{'kWh'}")
                 col2.metric("Total Water Usage", f"{month_w_usages:,.0f}{'m3'}")
                 st.text(f"Comment: {comment}")
-
-   
