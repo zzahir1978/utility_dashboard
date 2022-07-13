@@ -400,6 +400,9 @@ if authentication_status:
             col1.metric("DiGi Zahir Cost:", f"RM{df_digi_zahir_2022.sum():,.2f}")
             col2.metric("DiGi Ani Cost:", f"RM{df_digi_ani_2022.sum():,.2f}")
             col3.metric("Streamyx Cost:", f"RM{df_streamyx_2022.sum():,.2f}")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Electricity Usage:", f"{df_eusage_2022.sum():,.0f}kWh")
+            col2.metric("Water Usage:", f"{df_wusage_2022.sum():,.0f}m3")
             # Graph Yr 2022
             fig_2022 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2022.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2022.sum()],name=''))
@@ -434,6 +437,8 @@ if authentication_status:
             col3.metric("Streamyx Cost:", f"RM{df_streamyx_2021.sum():,.2f}")
             col1, col2, col3 = st.columns(3)
             col1.metric("Total Costs:", f"RM{(df_ecost_2021.sum()+df_wcost_2021.sum()+df_streamyx_2021.sum()):,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2021.sum():,.0f}kWh")
+            col3.metric("Water Usage:", f"{df_wusage_2021.sum():,.0f}m3")
             # Graph Yr 2021
             fig_2021 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2021.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2021.sum()],name=''))
@@ -466,6 +471,8 @@ if authentication_status:
             col3.metric("Streamyx Cost:", f"RM{df_streamyx_2020.sum():,.2f}")
             col1, col2, col3 = st.columns(3)
             col1.metric("Total Costs:", f"RM{(df_ecost_2020.sum()+df_wcost_2020.sum()+df_streamyx_2020.sum()):,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2020.sum():,.0f}kWh")
+            col3.metric("Water Usage:", f"{df_wusage_2020.sum():,.0f}m3")
             # Graph Yr 2020
             fig_2020 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2020.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2020.sum()],name=''))
@@ -496,6 +503,9 @@ if authentication_status:
             col1.metric("Electricity Cost:", f"RM{df_ecost_2019.sum():,.2f}")
             col2.metric("Water Cost:", f"RM{df_wcost_2019.sum():,.2f}")
             col3.metric("Total Costs:", f"RM{(df_ecost_2019.sum()+df_wcost_2019.sum()):,.2f}")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Electricity Usage:", f"{df_ecost_2019.sum():,.0f}kWh")
+            col2.metric("Water Usage:", f"{df_wusage_2019.sum():,.0f}m3")
             # Graph Yr 2019
             fig_2019 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_2019.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2019.sum()],name=''))
