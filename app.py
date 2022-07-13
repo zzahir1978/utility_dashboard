@@ -123,85 +123,99 @@ if authentication_status:
     entries = fetch_all_periods()
     df = json.dumps(entries)
     df = pd.read_json(df)
-    df['key'] = df['key'].str.replace('_',' ')
-    df_1 = df['key'].str.split(' ', 1, expand=True)
-    df = pd.concat([df,df_1],axis=1)
-    df = df[['digi_ani','digi_zahir','e_cost','e_usage','streamyx','w_cost','w_usage',0,1]]
-    df = df.rename(columns={0:'year',1:'month'})
-    df_2014 = df[df.year == '2014']
-    df_2015 = df[df.year == '2015']
-    df_2016 = df[df.year == '2016']
-    df_2017 = df[df.year == '2017']
-    df_2018 = df[df.year == '2018']
-    df_2019 = df[df.year == '2019']
-    df_2020 = df[df.year == '2020']
-    df_2021 = df[df.year == '2021']
-    df_2022 = df[df.year == '2022']
-    df_2023 = df[df.year == '2023']
+    df['key'] = df['key'].str.replace('_','/')
+    df['key']= pd.to_datetime(df['key'])
     # Year 2022
-    df_ecost_2022 = df_2022['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2022 = df[(df['key'] >= "2022-01-01") & (df['key'] <="2022-12-01")]
+    df_2022 = df_2022.sort_values(by='key')
+    df_ecost_2022 = df_2022['e_cost'].map(Counter).groupby(df_2022['key']).sum().reset_index()
     df_ecost_2022 = df_ecost_2022['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2022 = df_ecost_2022.at[df_ecost_2022.index[0]]
-    df_wcost_2022 = df_2022['w_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_wcost_2022 = df_2022['w_cost'].map(Counter).groupby(df_2022['key']).sum().reset_index()
     df_wcost_2022 = df_wcost_2022['w_cost'].apply(lambda x: x.get('RM_w')).dropna()
-    df_wcost_2022 = df_wcost_2022.at[df_wcost_2022.index[0]]
-    df_dg_zahir_2022 = df_2022['digi_zahir'].map(Counter).groupby(df['year']).sum().reset_index()
-    df_dg_zahir_2022 = df_dg_zahir_2022['digi_zahir'].apply(lambda x: x.get('RM_d1')).dropna()
-    df_dg_zahir_2022 = df_dg_zahir_2022.at[df_dg_zahir_2022.index[0]]
-    df_dg_ani_2022 = df_2022['digi_ani'].map(Counter).groupby(df['year']).sum().reset_index()
-    df_dg_ani_2022 = df_dg_ani_2022['digi_ani'].apply(lambda x: x.get('RM_d2')).dropna()
-    df_dg_ani_2022 = df_dg_ani_2022.at[df_dg_ani_2022.index[0]]
-    df_streamyx_2022 = df_2022['streamyx'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_eusage_2022 = df_2022['e_usage'].map(Counter).groupby(df_2022['key']).sum().reset_index()
+    df_eusage_2022 = df_eusage_2022['e_usage'].apply(lambda x: x.get('kWh')).dropna()
+    df_wusage_2022 = df_2022['w_usage'].map(Counter).groupby(df_2022['key']).sum().reset_index()
+    df_wusage_2022 = df_wusage_2022['w_usage'].apply(lambda x: x.get('m3')).dropna()
+    df_digi_zahir_2022 = df_2022['digi_zahir'].map(Counter).groupby(df_2022['key']).sum().reset_index()
+    df_digi_zahir_2022 = df_digi_zahir_2022['digi_zahir'].apply(lambda x: x.get('RM_d1')).dropna()
+    df_digi_ani_2022 = df_2022['digi_ani'].map(Counter).groupby(df_2022['key']).sum().reset_index()
+    df_digi_ani_2022 = df_digi_ani_2022['digi_ani'].apply(lambda x: x.get('RM_d2')).dropna()
+    df_streamyx_2022 = df_2022['streamyx'].map(Counter).groupby(df_2022['key']).sum().reset_index()
     df_streamyx_2022 = df_streamyx_2022['streamyx'].apply(lambda x: x.get('RM_s')).dropna()
-    df_streamyx_2022 = df_streamyx_2022.at[df_streamyx_2022.index[0]]
     # Year 2021
-    df_ecost_2021 = df_2021['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2021 = df[(df['key'] >= "2021-01-01") & (df['key'] <="2021-12-01")]
+    df_2021 = df_2021.sort_values(by='key')
+    df_ecost_2021 = df_2021['e_cost'].map(Counter).groupby(df_2021['key']).sum().reset_index()
     df_ecost_2021 = df_ecost_2021['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2021 = df_ecost_2021.at[df_ecost_2021.index[0]]
-    df_wcost_2021 = df_2021['w_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_wcost_2021 = df_2021['w_cost'].map(Counter).groupby(df_2021['key']).sum().reset_index()
     df_wcost_2021 = df_wcost_2021['w_cost'].apply(lambda x: x.get('RM_w')).dropna()
-    df_wcost_2021 = df_wcost_2021.at[df_wcost_2021.index[0]]
-    df_streamyx_2021 = df_2021['streamyx'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_eusage_2021 = df_2021['e_usage'].map(Counter).groupby(df_2021['key']).sum().reset_index()
+    df_eusage_2021 = df_eusage_2021['e_usage'].apply(lambda x: x.get('kWh')).dropna()
+    df_wusage_2021 = df_2021['w_usage'].map(Counter).groupby(df_2021['key']).sum().reset_index()
+    df_wusage_2021 = df_wusage_2021['w_usage'].apply(lambda x: x.get('m3')).dropna()
+    df_streamyx_2021 = df_2021['streamyx'].map(Counter).groupby(df_2021['key']).sum().reset_index()
     df_streamyx_2021 = df_streamyx_2021['streamyx'].apply(lambda x: x.get('RM_s')).dropna()
-    df_streamyx_2021 = df_streamyx_2021.at[df_streamyx_2021.index[0]]
     # Year 2020
-    df_ecost_2020 = df_2020['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2020 = df[(df['key'] >= "2020-01-01") & (df['key'] <="2020-12-01")]
+    df_2020 = df_2020.sort_values(by='key')
+    df_ecost_2020 = df_2020['e_cost'].map(Counter).groupby(df_2020['key']).sum().reset_index()
     df_ecost_2020 = df_ecost_2020['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2020 = df_ecost_2020.at[df_ecost_2020.index[0]]
-    df_wcost_2020 = df_2020['w_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_wcost_2020 = df_2020['w_cost'].map(Counter).groupby(df_2020['key']).sum().reset_index()
     df_wcost_2020 = df_wcost_2020['w_cost'].apply(lambda x: x.get('RM_w')).dropna()
-    df_wcost_2020 = df_wcost_2020.at[df_wcost_2020.index[0]]
-    df_streamyx_2020 = df_2020['streamyx'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_eusage_2020 = df_2020['e_usage'].map(Counter).groupby(df_2020['key']).sum().reset_index()
+    df_eusage_2020 = df_eusage_2020['e_usage'].apply(lambda x: x.get('kWh')).dropna()
+    df_wusage_2020 = df_2020['w_usage'].map(Counter).groupby(df_2020['key']).sum().reset_index()
+    df_wusage_2020 = df_wusage_2020['w_usage'].apply(lambda x: x.get('m3')).dropna()
+    df_streamyx_2020 = df_2020['streamyx'].map(Counter).groupby(df_2020['key']).sum().reset_index()
     df_streamyx_2020 = df_streamyx_2020['streamyx'].apply(lambda x: x.get('RM_s')).dropna()
-    df_streamyx_2020 = df_streamyx_2020.at[df_streamyx_2020.index[0]]
     # Year 2019
-    df_ecost_2019 = df_2019['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2019 = df[(df['key'] >= "2019-01-01") & (df['key'] <="2019-12-01")]
+    df_2019 = df_2019.sort_values(by='key')
+    df_ecost_2019 = df_2019['e_cost'].map(Counter).groupby(df_2019['key']).sum().reset_index()
     df_ecost_2019 = df_ecost_2019['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2019 = df_ecost_2019.at[df_ecost_2019.index[0]]
-    df_wcost_2019 = df_2019['w_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_wcost_2019 = df_2019['w_cost'].map(Counter).groupby(df_2019['key']).sum().reset_index()
     df_wcost_2019 = df_wcost_2019['w_cost'].apply(lambda x: x.get('RM_w')).dropna()
-    df_wcost_2019 = df_wcost_2019.at[df_wcost_2019.index[0]]
+    df_eusage_2019 = df_2019['e_usage'].map(Counter).groupby(df_2019['key']).sum().reset_index()
+    df_eusage_2019 = df_eusage_2019['e_usage'].apply(lambda x: x.get('kWh')).dropna()
+    df_wusage_2019 = df_2019['w_usage'].map(Counter).groupby(df_2019['key']).sum().reset_index()
+    df_wusage_2019 = df_wusage_2019['w_usage'].apply(lambda x: x.get('m3')).dropna()
     # Year 2018
-    df_ecost_2018 = df_2018['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2018 = df[(df['key'] >= "2018-01-01") & (df['key'] <="2018-12-01")]
+    df_2018 = df_2018.sort_values(by='key')
+    df_ecost_2018 = df_2018['e_cost'].map(Counter).groupby(df_2018['key']).sum().reset_index()
     df_ecost_2018 = df_ecost_2018['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2018 = df_ecost_2018.at[df_ecost_2018.index[0]]
+    df_eusage_2018 = df_2018['e_usage'].map(Counter).groupby(df_2018['key']).sum().reset_index()
+    df_eusage_2018 = df_eusage_2018['e_usage'].apply(lambda x: x.get('kWh')).dropna()
     # Year 2017
-    df_ecost_2017 = df_2017['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2017 = df[(df['key'] >= "2017-01-01") & (df['key'] <="2017-12-01")]
+    df_2017 = df_2017.sort_values(by='key')
+    df_ecost_2017 = df_2017['e_cost'].map(Counter).groupby(df_2017['key']).sum().reset_index()
     df_ecost_2017 = df_ecost_2017['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2017 = df_ecost_2017.at[df_ecost_2017.index[0]]
+    df_eusage_2017 = df_2017['e_usage'].map(Counter).groupby(df_2017['key']).sum().reset_index()
+    df_eusage_2017 = df_eusage_2017['e_usage'].apply(lambda x: x.get('kWh')).dropna()
     # Year 2016
-    df_ecost_2016 = df_2016['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2016 = df[(df['key'] >= "2016-01-01") & (df['key'] <="2016-12-01")]
+    df_2016 = df_2016.sort_values(by='key')
+    df_ecost_2016 = df_2016['e_cost'].map(Counter).groupby(df_2016['key']).sum().reset_index()
     df_ecost_2016 = df_ecost_2016['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2016 = df_ecost_2016.at[df_ecost_2016.index[0]]
+    df_eusage_2016 = df_2016['e_usage'].map(Counter).groupby(df_2016['key']).sum().reset_index()
+    df_eusage_2016 = df_eusage_2016['e_usage'].apply(lambda x: x.get('kWh')).dropna()
     # Year 2015
-    df_ecost_2015 = df_2015['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2015 = df[(df['key'] >= "2015-01-01") & (df['key'] <="2015-12-01")]
+    df_2015 = df_2015.sort_values(by='key')
+    df_ecost_2015 = df_2015['e_cost'].map(Counter).groupby(df_2015['key']).sum().reset_index()
     df_ecost_2015 = df_ecost_2015['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2015 = df_ecost_2015.at[df_ecost_2015.index[0]]
+    df_eusage_2015 = df_2015['e_usage'].map(Counter).groupby(df_2015['key']).sum().reset_index()
+    df_eusage_2015 = df_eusage_2015['e_usage'].apply(lambda x: x.get('kWh')).dropna()
     # Year 2014
-    df_ecost_2014 = df_2014['e_cost'].map(Counter).groupby(df['year']).sum().reset_index()
+    df_2014 = df[(df['key'] >= "2014-01-01") & (df['key'] <="2014-12-01")]
+    df_2014 = df_2014.sort_values(by='key')
+    df_ecost_2014 = df_2014['e_cost'].map(Counter).groupby(df_2014['key']).sum().reset_index()
     df_ecost_2014 = df_ecost_2014['e_cost'].apply(lambda x: x.get('RM_e')).dropna()
-    df_ecost_2014 = df_ecost_2014.at[df_ecost_2014.index[0]]
-
+    df_eusage_2014 = df_2014['e_usage'].map(Counter).groupby(df_2014['key']).sum().reset_index()
+    df_eusage_2014 = df_eusage_2014['e_usage'].apply(lambda x: x.get('kWh')).dropna()
+    
+    
     # --- DATA ENTRY ---
     if selected == "Data Entry":
         st.header(f"Monthly Data Entry:")
@@ -318,9 +332,11 @@ if authentication_status:
             # Graph Electricity
             fig_yearly_e = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_yearly_e.add_trace(go.Bar(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
-                y = [df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],name=''))
+                y = [df_ecost_2014.sum(),df_ecost_2015.sum(),df_ecost_2016.sum(),df_ecost_2017.sum(),df_ecost_2018.sum(),df_ecost_2019.sum(),
+                    df_ecost_2020.sum(),df_ecost_2021.sum(),df_ecost_2022.sum()],name=''))
             fig_yearly_e.add_trace(go.Scatter(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
-                y = [df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],name='',
+                y = [df_ecost_2014.sum(),df_ecost_2015.sum(),df_ecost_2016.sum(),df_ecost_2017.sum(),df_ecost_2018.sum(),df_ecost_2019.sum(),
+                    df_ecost_2020.sum(),df_ecost_2021.sum(),df_ecost_2022.sum()],name='',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
             fig_yearly_e.update_layout(title_text='Annual Electricity Cost (RM)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
@@ -331,7 +347,8 @@ if authentication_status:
             # PIE CHART
             fig_pie_yearly_e = make_subplots(specs=[[{"type": "domain"}]])
             fig_pie_yearly_e.add_trace(go.Pie(
-                values=[df_ecost_2014,df_ecost_2015,df_ecost_2016,df_ecost_2017,df_ecost_2018,df_ecost_2019,df_ecost_2020,df_ecost_2021,df_ecost_2022],
+                values=[df_ecost_2014.sum(),df_ecost_2015.sum(),df_ecost_2016.sum(),df_ecost_2017.sum(),df_ecost_2018.sum(),df_ecost_2019.sum(),
+                        df_ecost_2020.sum(),df_ecost_2021.sum(),df_ecost_2022.sum()],
                 labels=['2014','2015','2016','2017','2018','2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
             fig_pie_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
             fig_pie_yearly_e.update_layout(height=350,showlegend=False,title_text='Annual Electricity Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
@@ -346,9 +363,9 @@ if authentication_status:
             # Graph Water
             fig_yearly_w = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
             fig_yearly_w.add_trace(go.Bar(x = ['2019','2020','2021','2022'], 
-                y = [df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],name=''))
+                y = [df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],name=''))
             fig_yearly_w.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
-                y = [df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],name='',
+                y = [df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],name='',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
             fig_yearly_w.update_layout(title_text='Annual Water Cost (RM)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
@@ -359,7 +376,7 @@ if authentication_status:
             # PIE CHART
             fig_pie_yearly_w = make_subplots(specs=[[{"type": "domain"}]])
             fig_pie_yearly_w.add_trace(go.Pie(
-                values=[df_wcost_2019,df_wcost_2020,df_wcost_2021,df_wcost_2022],
+                values=[df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],
                 labels=['2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
             fig_pie_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
             fig_pie_yearly_w.update_layout(height=350,showlegend=False,title_text='Annual Water Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
@@ -376,20 +393,20 @@ if authentication_status:
 
         with st.expander("Click to View Year 2022 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:",f"RM{(df_ecost_2022+df_wcost_2022+df_dg_zahir_2022+df_dg_ani_2022+df_streamyx_2022):,.2f}")
-            col2.metric("Electricity Cost:", f"RM{df_ecost_2022:,.2f}")
-            col3.metric("Water Cost:", f"RM{df_wcost_2022:,.2f}")
+            col1.metric("Total Costs:",f"RM{(df_ecost_2022.sum()+df_wcost_2022.sum()+df_digi_zahir_2022.sum()+df_digi_ani_2022.sum()+df_streamyx_2022.sum()):,.2f}")
+            col2.metric("Electricity Cost:", f"RM{df_ecost_2022.sum():,.2f}")
+            col3.metric("Water Cost:", f"RM{df_wcost_2022.sum():,.2f}")
             col1, col2, col3 = st.columns(3)
-            col1.metric("DiGi Zahir Cost:", f"RM{df_dg_zahir_2022:,.2f}")
-            col2.metric("DiGi Ani Cost:", f"RM{df_dg_ani_2022:,.2f}")
-            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2022:,.2f}")
+            col1.metric("DiGi Zahir Cost:", f"RM{df_digi_zahir_2022.sum():,.2f}")
+            col2.metric("DiGi Ani Cost:", f"RM{df_digi_ani_2022.sum():,.2f}")
+            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2022.sum():,.2f}")
             # Graph Yr 2022
             fig_2022 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2022.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2022],name=''))
-            fig_2022.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2022],name=''))
-            fig_2022.add_trace(go.Bar(x = ['DiGi Zahir'], y = [df_dg_zahir_2022],name=''))
-            fig_2022.add_trace(go.Bar(x = ['DiGi Ani'], y = [df_dg_ani_2022],name=''))
-            fig_2022.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2022],name=''))
+            fig_2022.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2022.sum()],name=''))
+            fig_2022.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2022.sum()],name=''))
+            fig_2022.add_trace(go.Bar(x = ['DiGi Zahir'], y = [df_digi_zahir_2022.sum()],name=''))
+            fig_2022.add_trace(go.Bar(x = ['DiGi Ani'], y = [df_digi_ani_2022.sum()],name=''))
+            fig_2022.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2022.sum()],name=''))
             fig_2022.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
@@ -399,7 +416,7 @@ if authentication_status:
             # PIE CHART
             fig_pie_2022 = make_subplots(specs=[[{"type": "domain"}]])
             fig_pie_2022.add_trace(go.Pie(
-                values=[df_ecost_2022, df_wcost_2022, df_dg_zahir_2022, df_dg_ani_2022, df_streamyx_2022],
+                values=[df_ecost_2022.sum(), df_wcost_2022.sum(), df_digi_zahir_2022.sum(), df_digi_ani_2022.sum(), df_streamyx_2022.sum()],
                 labels=['Electricity','Water','DiGi Zahir','Digi Ani','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
             fig_pie_2022.update_annotations(font=dict(family="Helvetica", size=10))
             fig_pie_2022.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
@@ -412,16 +429,16 @@ if authentication_status:
         
         with st.expander("Click to View Year 2021 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2021:,.2f}")
-            col2.metric("Water Cost:", f"RM{df_wcost_2021:,.2f}")
-            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2021:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2021.sum():,.2f}")
+            col2.metric("Water Cost:", f"RM{df_wcost_2021.sum():,.2f}")
+            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2021.sum():,.2f}")
             col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2021+df_wcost_2021+df_streamyx_2021):,.2f}")
+            col1.metric("Total Costs:", f"RM{(df_ecost_2021.sum()+df_wcost_2021.sum()+df_streamyx_2021.sum()):,.2f}")
             # Graph Yr 2021
             fig_2021 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2021.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2021],name=''))
-            fig_2021.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2021],name=''))
-            fig_2021.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2021],name=''))
+            fig_2021.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2021.sum()],name=''))
+            fig_2021.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2021.sum()],name=''))
+            fig_2021.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2021.sum()],name=''))
             fig_2021.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
@@ -431,7 +448,7 @@ if authentication_status:
             # PIE CHART
             fig_pie_2021 = make_subplots(specs=[[{"type": "domain"}]])
             fig_pie_2021.add_trace(go.Pie(
-                values=[df_ecost_2021, df_wcost_2021, df_streamyx_2021],
+                values=[df_ecost_2021.sum(), df_wcost_2021.sum(), df_streamyx_2021.sum()],
                 labels=['Electricity','Water','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
             fig_pie_2021.update_annotations(font=dict(family="Helvetica", size=10))
             fig_pie_2021.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
@@ -444,16 +461,16 @@ if authentication_status:
         
         with st.expander("Click to View Year 2020 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2020:,.2f}")
-            col2.metric("Water Cost:", f"RM{df_wcost_2020:,.2f}")
-            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2020:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2020.sum():,.2f}")
+            col2.metric("Water Cost:", f"RM{df_wcost_2020.sum():,.2f}")
+            col3.metric("Streamyx Cost:", f"RM{df_streamyx_2020.sum():,.2f}")
             col1, col2, col3 = st.columns(3)
-            col1.metric("Total Costs:", f"RM{(df_ecost_2020+df_wcost_2020+df_streamyx_2020):,.2f}")
+            col1.metric("Total Costs:", f"RM{(df_ecost_2020.sum()+df_wcost_2020.sum()+df_streamyx_2020.sum()):,.2f}")
             # Graph Yr 2020
             fig_2020 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2020.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2020],name=''))
-            fig_2020.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2020],name=''))
-            fig_2020.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2020],name=''))
+            fig_2020.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2020.sum()],name=''))
+            fig_2020.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2020.sum()],name=''))
+            fig_2020.add_trace(go.Bar(x = ['Streamyx'], y = [df_streamyx_2020.sum()],name=''))
             fig_2020.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
@@ -463,7 +480,7 @@ if authentication_status:
             # PIE CHART
             fig_pie_2020 = make_subplots(specs=[[{"type": "domain"}]])
             fig_pie_2020.add_trace(go.Pie(
-                values=[df_ecost_2020, df_wcost_2020, df_streamyx_2020],
+                values=[df_ecost_2020.sum(), df_wcost_2020.sum(), df_streamyx_2020.sum()],
                 labels=['Electricity','Water','Streamyx'],textposition='inside',textinfo='label+percent'),row=1, col=1)
             fig_pie_2020.update_annotations(font=dict(family="Helvetica", size=10))
             fig_pie_2020.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
@@ -476,13 +493,13 @@ if authentication_status:
         
         with st.expander("Click to View Year 2019 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2019:,.2f}")
-            col2.metric("Water Cost:", f"RM{df_wcost_2019:,.2f}")
-            col3.metric("Total Costs:", f"RM{(df_ecost_2019+df_wcost_2019):,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2019.sum():,.2f}")
+            col2.metric("Water Cost:", f"RM{df_wcost_2019.sum():,.2f}")
+            col3.metric("Total Costs:", f"RM{(df_ecost_2019.sum()+df_wcost_2019.sum()):,.2f}")
             # Graph Yr 2019
             fig_2019 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2019.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2019],name=''))
-            fig_2019.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2019],name=''))
+            fig_2019.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2019.sum()],name=''))
+            fig_2019.add_trace(go.Bar(x = ['Water'], y = [df_wcost_2019.sum()],name=''))
             fig_2019.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
@@ -492,7 +509,7 @@ if authentication_status:
             # PIE CHART
             fig_pie_2019 = make_subplots(specs=[[{"type": "domain"}]])
             fig_pie_2019.add_trace(go.Pie(
-                values=[df_ecost_2019, df_wcost_2019],
+                values=[df_ecost_2019.sum(), df_wcost_2019.sum()],
                 labels=['Electricity','Water'],textposition='inside',textinfo='label+percent'),row=1, col=1)
             fig_pie_2019.update_annotations(font=dict(family="Helvetica", size=10))
             fig_pie_2019.update_layout(height=350,showlegend=False,title_text='Total Utility Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
@@ -505,78 +522,138 @@ if authentication_status:
         
         with st.expander("Click to View Year 2018 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2018:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2018.sum():,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2018.sum():,.0f}kWh")
             # Graph Yr 2018
-            fig_2018 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2018.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2018],name=''))
-            fig_2018.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
+            # Cost
+            fig_cost_2018 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_cost_2018.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2018,name=''))
+            fig_cost_2018.update_layout(title_text='Monthly Electricity Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
-            fig_2018.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2018.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_2018.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2018.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_cost_2018.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2018.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Usage
+            fig_usage_2018 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_usage_2018.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2018,name=''))
+            fig_usage_2018.update_layout(title_text='Monthly Electricity Usage (kWh)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_usage_2018.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_usage_2018.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_usage_2018.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            st.plotly_chart(fig_2018, use_container_width=True)
+            st.plotly_chart(fig_cost_2018, use_container_width=True)
+            st.plotly_chart(fig_usage_2018, use_container_width=True)
         
         with st.expander("Click to View Year 2017 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2017:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2017.sum():,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2017.sum():,.0f}kWh")
             # Graph Yr 2017
-            fig_2017 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2017.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2017],name=''))
-            fig_2017.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
+            # Cost
+            fig_cost_2017 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_cost_2017.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2017,name=''))
+            fig_cost_2017.update_layout(title_text='Monthly Electricity Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
-            fig_2017.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2017.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_2017.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2017.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_cost_2017.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2017.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Usage
+            fig_usage_2017 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_usage_2017.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2017,name=''))
+            fig_usage_2017.update_layout(title_text='Monthly Electricity Usage (kWh)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_usage_2017.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_usage_2017.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_usage_2017.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            st.plotly_chart(fig_2017, use_container_width=True)
+            st.plotly_chart(fig_cost_2017, use_container_width=True)
+            st.plotly_chart(fig_usage_2017, use_container_width=True)
         
         with st.expander("Click to View Year 2016 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2016:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2016.sum():,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2016.sum():,.0f}kWh")
             # Graph Yr 2016
-            fig_2016 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2016.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2016],name=''))
-            fig_2016.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
+            # Cost
+            fig_cost_2016 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_cost_2016.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2016,name=''))
+            fig_cost_2016.update_layout(title_text='Monthly Electricity Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
-            fig_2016.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2016.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_2016.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2016.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_cost_2016.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2016.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Usage
+            fig_usage_2016 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_usage_2016.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2016,name=''))
+            fig_usage_2016.update_layout(title_text='Monthly Electricity Usage (kWh)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_usage_2016.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_usage_2016.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_usage_2016.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            st.plotly_chart(fig_2016, use_container_width=True)
+            st.plotly_chart(fig_cost_2016, use_container_width=True)
+            st.plotly_chart(fig_usage_2016, use_container_width=True)
         
         with st.expander("Click to View Year 2015 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2015:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2015.sum():,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2015.sum():,.0f}kWh")
             # Graph Yr 2015
-            fig_2015 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2015.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2015],name=''))
-            fig_2015.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
+            # Cost
+            fig_cost_2015 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_cost_2015.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2015,name=''))
+            fig_cost_2015.update_layout(title_text='Monthly Electricity Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
-            fig_2015.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2015.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_2015.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2015.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_cost_2015.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2015.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Usage
+            fig_usage_2015 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_usage_2015.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2015,name=''))
+            fig_usage_2015.update_layout(title_text='Monthly Electricity Usage (kWh)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_usage_2015.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_usage_2015.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_usage_2015.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            st.plotly_chart(fig_2015, use_container_width=True)
+            st.plotly_chart(fig_cost_2015, use_container_width=True)
+            st.plotly_chart(fig_usage_2015, use_container_width=True)
         
         with st.expander("Click to View Year 2014 Data:"):
             col1, col2, col3 = st.columns(3)
-            col1.metric("Electricity Cost:", f"RM{df_ecost_2014:,.2f}")
+            col1.metric("Electricity Cost:", f"RM{df_ecost_2014.sum():,.2f}")
+            col2.metric("Electricity Usage:", f"{df_eusage_2014.sum():,.0f}kWh")
             # Graph Yr 2014
-            fig_2014 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_2014.add_trace(go.Bar(x = ['Electricity'], y = [df_ecost_2014],name=''))
-            fig_2014.update_layout(title_text='Total Utility Cost (RM)',title_x=0.5,
+            # Cost
+            fig_cost_2014 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_cost_2014.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2014,name=''))
+            fig_cost_2014.update_layout(title_text='Monthly Electricity Cost (RM)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
-            fig_2014.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_2014.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_2014.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2014.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_cost_2014.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_cost_2014.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Usage
+            fig_usage_2014 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_usage_2014.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2014,name=''))
+            fig_usage_2014.update_layout(title_text='Monthly Electricity Usage (kWh)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_usage_2014.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_usage_2014.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_usage_2014.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            st.plotly_chart(fig_2014, use_container_width=True)
+            st.plotly_chart(fig_cost_2014, use_container_width=True)
+            st.plotly_chart(fig_usage_2014, use_container_width=True)
 
     # --- DATA QUERY ---
     if selected == "Data Query":
