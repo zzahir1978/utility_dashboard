@@ -269,8 +269,7 @@ if authentication_status:
     # --- DATA VISUALISATION ---
     if selected == "Data Overview":
         st.header("Summary")
-        st.subheader("Total Cost & Usage:")
-
+        
         entries = fetch_all_periods()
 
         total_e_usage = sum([sum(entry['e_usage'].values()) for entry in entries])
@@ -285,16 +284,19 @@ if authentication_status:
         e_rate = total_e_cost/total_e_usage
         w_rate = total_w_cost/total_w_usage
 
+        st.subheader("Total Cost:")
         col1, col2, col3 = st.columns(3)
         col1.metric("Electricity Cost:", f"RM{total_e_cost:,.2f}")
         col2.metric("Water Cost:", f"RM{total_w_cost:,.2f}")
         col3.metric("Telco Cost:", f"RM{(total_digi_zahir_cost+total_digi_ani_cost+total_streamyx_cost):,.2f}")
-        
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total Costs:", f"RM{total_cost:,.2f}")
+
+        st.subheader("Total Usage:")
         col1, col2, col3 = st.columns(3)
         col1.metric("Electricity Usage:", f"{total_e_usage:,.0f}kWh")
         col2.metric("Water Usage:", f"{total_w_usage:,.0f}m3")
-        col3.metric("Total Costs:", f"RM{total_cost:,.2f}")
-
+        
         st.subheader("Graphs:")
         # BAR CHART
         fig_1 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
@@ -329,63 +331,114 @@ if authentication_status:
         st.subheader("Annual Data By Type of Utility:")
 
         with st.expander("Electricity:"):
-            # Graph Electricity
-            fig_yearly_e = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_yearly_e.add_trace(go.Bar(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
+            # Graph Electricity Cost
+            fig_yearly_ecost = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_yearly_ecost.add_trace(go.Bar(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
                 y = [df_ecost_2014.sum(),df_ecost_2015.sum(),df_ecost_2016.sum(),df_ecost_2017.sum(),df_ecost_2018.sum(),df_ecost_2019.sum(),
                     df_ecost_2020.sum(),df_ecost_2021.sum(),df_ecost_2022.sum()],name=''))
-            fig_yearly_e.add_trace(go.Scatter(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
+            fig_yearly_ecost.add_trace(go.Scatter(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
                 y = [df_ecost_2014.sum(),df_ecost_2015.sum(),df_ecost_2016.sum(),df_ecost_2017.sum(),df_ecost_2018.sum(),df_ecost_2019.sum(),
                     df_ecost_2020.sum(),df_ecost_2021.sum(),df_ecost_2022.sum()],name='',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_yearly_e.update_layout(title_text='Annual Electricity Cost (RM)',title_x=0.5, height=350,
+            fig_yearly_ecost.update_layout(title_text='Annual Electricity Cost (RM)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False)
-            fig_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_yearly_e.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_yearly_e.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            # PIE CHART
-            fig_pie_yearly_e = make_subplots(specs=[[{"type": "domain"}]])
-            fig_pie_yearly_e.add_trace(go.Pie(
+            fig_yearly_ecost.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_yearly_ecost.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_ecost.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART Cost
+            fig_pie_yearly_ecost = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_yearly_ecost.add_trace(go.Pie(
                 values=[df_ecost_2014.sum(),df_ecost_2015.sum(),df_ecost_2016.sum(),df_ecost_2017.sum(),df_ecost_2018.sum(),df_ecost_2019.sum(),
                         df_ecost_2020.sum(),df_ecost_2021.sum(),df_ecost_2022.sum()],
                 labels=['2014','2015','2016','2017','2018','2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
-            fig_pie_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_pie_yearly_e.update_layout(height=350,showlegend=False,title_text='Annual Electricity Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_ecost.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_ecost.update_layout(height=350,showlegend=False,title_text='Annual Electricity Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
             col1, col2 = st.columns(2)
-            col1.plotly_chart(fig_yearly_e, use_container_width=True)
-            col2.plotly_chart(fig_pie_yearly_e, use_container_width=True)
+            col1.plotly_chart(fig_yearly_ecost, use_container_width=True)
+            col2.plotly_chart(fig_pie_yearly_ecost, use_container_width=True)
             # Chart Presentation
             #st.plotly_chart(fig_yearly_e, use_container_width=True)
-
-        with st.expander("Water:"):
-            # Graph Water
-            fig_yearly_w = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_yearly_w.add_trace(go.Bar(x = ['2019','2020','2021','2022'], 
-                y = [df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],name=''))
-            fig_yearly_w.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
-                y = [df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],name='',
+            # Graph Electricity Usage
+            fig_yearly_eusage = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_yearly_eusage.add_trace(go.Bar(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
+                y = [df_eusage_2014.sum(),df_eusage_2015.sum(),df_eusage_2016.sum(),df_eusage_2017.sum(),df_eusage_2018.sum(),df_eusage_2019.sum(),
+                    df_eusage_2020.sum(),df_eusage_2021.sum(),df_eusage_2022.sum()],name=''))
+            fig_yearly_eusage.add_trace(go.Scatter(x = ['2014','2015','2016','2017','2018','2019','2020','2021','2022'], 
+                y = [df_eusage_2014.sum(),df_eusage_2015.sum(),df_eusage_2016.sum(),df_eusage_2017.sum(),df_eusage_2018.sum(),df_eusage_2019.sum(),
+                    df_eusage_2020.sum(),df_eusage_2021.sum(),df_eusage_2022.sum()],name='',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_yearly_w.update_layout(title_text='Annual Water Cost (RM)',title_x=0.5, height=350,
+            fig_yearly_eusage.update_layout(title_text='Annual Electricity Usage (kWh)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False)
-            fig_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_yearly_w.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_yearly_w.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            # PIE CHART
-            fig_pie_yearly_w = make_subplots(specs=[[{"type": "domain"}]])
-            fig_pie_yearly_w.add_trace(go.Pie(
-                values=[df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],
-                labels=['2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
-            fig_pie_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_pie_yearly_w.update_layout(height=350,showlegend=False,title_text='Annual Water Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
+            fig_yearly_eusage.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_yearly_eusage.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_eusage.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART Usage
+            fig_pie_yearly_eusage = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_yearly_eusage.add_trace(go.Pie(
+                values=[df_eusage_2014.sum(),df_eusage_2015.sum(),df_eusage_2016.sum(),df_eusage_2017.sum(),df_eusage_2018.sum(),df_eusage_2019.sum(),
+                        df_eusage_2020.sum(),df_eusage_2021.sum(),df_eusage_2022.sum()],
+                labels=['2014','2015','2016','2017','2018','2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_yearly_eusage.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_eusage.update_layout(height=350,showlegend=False,title_text='Annual Electricity Usage (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
             col1, col2 = st.columns(2)
-            col1.plotly_chart(fig_yearly_w, use_container_width=True)
-            col2.plotly_chart(fig_pie_yearly_w, use_container_width=True)
+            col1.plotly_chart(fig_yearly_eusage, use_container_width=True)
+            col2.plotly_chart(fig_pie_yearly_eusage, use_container_width=True)
+
+        with st.expander("Water:"):
+            # Graph Water Cost
+            fig_yearly_wcost = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_yearly_wcost.add_trace(go.Bar(x = ['2019','2020','2021','2022'], 
+                y = [df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],name=''))
+            fig_yearly_wcost.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
+                y = [df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],name='',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_yearly_wcost.update_layout(title_text='Annual Water Cost (RM)',title_x=0.5, height=350,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False)
+            fig_yearly_wcost.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_yearly_wcost.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_wcost.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART Cost
+            fig_pie_yearly_wcost = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_yearly_wcost.add_trace(go.Pie(
+                values=[df_wcost_2019.sum(),df_wcost_2020.sum(),df_wcost_2021.sum(),df_wcost_2022.sum()],
+                labels=['2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_yearly_wcost.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_wcost.update_layout(height=350,showlegend=False,title_text='Annual Water Cost (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
             # Chart Presentation
-            #st.plotly_chart(fig_yearly_w, use_container_width=True)    
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_yearly_wcost, use_container_width=True)
+            col2.plotly_chart(fig_pie_yearly_wcost, use_container_width=True)
+            # Chart Presentation
+            #st.plotly_chart(fig_yearly_w, use_container_width=True)   
+            # Graph Water Usage
+            fig_yearly_wusage = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_yearly_wusage.add_trace(go.Bar(x = ['2019','2020','2021','2022'], 
+                y = [df_wusage_2019.sum(),df_wusage_2020.sum(),df_wusage_2021.sum(),df_wusage_2022.sum()],name=''))
+            fig_yearly_wusage.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
+                y = [df_wusage_2019.sum(),df_wusage_2020.sum(),df_wusage_2021.sum(),df_wusage_2022.sum()],name='',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_yearly_wusage.update_layout(title_text='Annual Water Usage (m3)',title_x=0.5, height=350,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False)
+            fig_yearly_wusage.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_yearly_wusage.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_yearly_wusage.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # PIE CHART Usage
+            fig_pie_yearly_wusage = make_subplots(specs=[[{"type": "domain"}]])
+            fig_pie_yearly_wusage.add_trace(go.Pie(
+                values=[df_wusage_2019.sum(),df_wusage_2020.sum(),df_wusage_2021.sum(),df_wusage_2022.sum()],
+                labels=['2019','2020','2021','2022'],textposition='inside',textinfo='label+percent'),row=1, col=1)
+            fig_pie_yearly_wusage.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_pie_yearly_wusage.update_layout(height=350,showlegend=False,title_text='Annual Water Usage (%)',title_x=0.5,font=dict(family="Helvetica", size=10))
+            # Chart Presentation
+            col1, col2 = st.columns(2)
+            col1.plotly_chart(fig_yearly_wusage, use_container_width=True)
+            col2.plotly_chart(fig_pie_yearly_wusage, use_container_width=True) 
                      
     # --- DATA LIBRARY ---
     if selected == "Data Library":
