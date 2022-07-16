@@ -347,7 +347,7 @@ if authentication_status:
                 y = [df_eusage_2014.sum(),df_eusage_2015.sum(),df_eusage_2016.sum(),df_eusage_2017.sum(),df_eusage_2018.sum(),df_eusage_2019.sum(),
                     df_eusage_2020.sum(),df_eusage_2021.sum(),df_eusage_2022.sum()],name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_yearly_e.update_layout(title_text='Annual Electricity (RM VS kWh)',title_x=0.5, height=350,
+            fig_yearly_e.update_layout(title_text='Annual Electricity (Cost VS Usage)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False)
             fig_yearly_e.update_annotations(font=dict(family="Helvetica", size=10))
@@ -388,7 +388,7 @@ if authentication_status:
             fig_yearly_w.add_trace(go.Scatter(x = ['2019','2020','2021','2022'], 
                 y = [df_wusage_2019.sum(),df_wusage_2020.sum(),df_wusage_2021.sum(),df_wusage_2022.sum()],name='m3',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_yearly_w.update_layout(title_text='Annual Water (RM VS m3)',title_x=0.5, height=350,
+            fig_yearly_w.update_layout(title_text='Annual Water (Cost VS Usage)',title_x=0.5, height=350,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False)
             fig_yearly_w.update_annotations(font=dict(family="Helvetica", size=10))
@@ -454,8 +454,38 @@ if authentication_status:
             col1, col2 = st.columns(2)
             col1.plotly_chart(fig_2022, use_container_width=True)
             col2.plotly_chart(fig_pie_2022, use_container_width=True)
+            # Cost VS Usage
+            fig_e_2022 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_e_2022.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2022,name='RM'))
+            fig_e_2022.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_ecost_2022,name='RM',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_e_2022.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2022,name='kWh'))
+            fig_e_2022.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2022,name='kWh',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_e_2022.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_e_2022.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_e_2022.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_e_2022.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
             # Chart Presentation
-            #st.plotly_chart(fig_2022, use_container_width=True)
+            st.plotly_chart(fig_e_2022, use_container_width=True)
+            # Cost VS Usage
+            fig_w_2022 = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+            fig_w_2022.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wcost_2022,name='RM'))
+            fig_w_2022.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wcost_2022,name='RM',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_w_2022.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2022,name='m3'))
+            fig_w_2022.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2022,name='m3',
+                mode='lines',line = dict(color='red', width=1)), secondary_y=False)
+            fig_w_2022.update_layout(title_text='Monthly Water (Cost VS Usage)',title_x=0.5,
+                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
+                yaxis_title=None,showlegend=False, height=350)
+            fig_w_2022.update_annotations(font=dict(family="Helvetica", size=10))
+            fig_w_2022.update_xaxes(title_text='', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            fig_w_2022.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+            # Chart Presentation
+            st.plotly_chart(fig_w_2022, use_container_width=True)
         
         with st.expander("Click to View Year 2021 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -496,7 +526,7 @@ if authentication_status:
             fig_e_2021.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2021,name='kWh'))
             fig_e_2021.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2021,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_e_2021.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_e_2021.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_e_2021.update_annotations(font=dict(family="Helvetica", size=10))
@@ -512,7 +542,7 @@ if authentication_status:
             fig_w_2021.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2021,name='m3'))
             fig_w_2021.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2021,name='m3',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_w_2021.update_layout(title_text='Monthly Water (RM VS m3)',title_x=0.5,
+            fig_w_2021.update_layout(title_text='Monthly Water (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_w_2021.update_annotations(font=dict(family="Helvetica", size=10))
@@ -560,7 +590,7 @@ if authentication_status:
             fig_e_2020.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2020,name='kWh'))
             fig_e_2020.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2020,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_e_2020.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_e_2020.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_e_2020.update_annotations(font=dict(family="Helvetica", size=10))
@@ -576,7 +606,7 @@ if authentication_status:
             fig_w_2020.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2020,name='m3'))
             fig_w_2020.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2020,name='m3',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_w_2020.update_layout(title_text='Monthly Water (RM VS m3)',title_x=0.5,
+            fig_w_2020.update_layout(title_text='Monthly Water (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_w_2020.update_annotations(font=dict(family="Helvetica", size=10))
@@ -622,7 +652,7 @@ if authentication_status:
             fig_e_2019.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2019,name='kWh'))
             fig_e_2019.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2019,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_e_2019.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_e_2019.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_e_2019.update_annotations(font=dict(family="Helvetica", size=10))
@@ -638,7 +668,7 @@ if authentication_status:
             fig_w_2019.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2019,name='m3'))
             fig_w_2019.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_wusage_2019,name='m3',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_w_2019.update_layout(title_text='Monthly Water (RM VS m3)',title_x=0.5,
+            fig_w_2019.update_layout(title_text='Monthly Water (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_w_2019.update_annotations(font=dict(family="Helvetica", size=10))
@@ -661,7 +691,7 @@ if authentication_status:
             fig_cost_2018.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2018,name='kWh'))
             fig_cost_2018.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2018,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_cost_2018.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_cost_2018.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_cost_2018.update_annotations(font=dict(family="Helvetica", size=10))
@@ -683,7 +713,7 @@ if authentication_status:
             fig_cost_2017.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2017,name='kWh'))
             fig_cost_2017.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2017,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_cost_2017.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_cost_2017.update_layout(title_text='Monthly Electricity Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_cost_2017.update_annotations(font=dict(family="Helvetica", size=10))
@@ -705,7 +735,7 @@ if authentication_status:
             fig_cost_2016.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2016,name='kWh'))
             fig_cost_2016.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2016,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_cost_2016.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_cost_2016.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_cost_2016.update_annotations(font=dict(family="Helvetica", size=10))
@@ -727,7 +757,7 @@ if authentication_status:
             fig_cost_2015.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2015,name='kWH'))
             fig_cost_2015.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2015,name='kWH',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_cost_2015.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_cost_2015.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_cost_2015.update_annotations(font=dict(family="Helvetica", size=10))
@@ -749,7 +779,7 @@ if authentication_status:
             fig_cost_2014.add_trace(go.Bar(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2014,name='kWh'))
             fig_cost_2014.add_trace(go.Scatter(x = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], y = df_eusage_2014,name='kWh',
                 mode='lines',line = dict(color='red', width=1)), secondary_y=False)
-            fig_cost_2014.update_layout(title_text='Monthly Electricity (RM VS kWh)',title_x=0.5,
+            fig_cost_2014.update_layout(title_text='Monthly Electricity (Cost VS Usage)',title_x=0.5,
                 font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",yaxis=(dict(showgrid=False)),
                 yaxis_title=None,showlegend=False, height=350)
             fig_cost_2014.update_annotations(font=dict(family="Helvetica", size=10))
