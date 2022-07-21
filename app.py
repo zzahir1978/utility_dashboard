@@ -225,31 +225,39 @@ if authentication_status:
             col2.selectbox("Select Year:", years, key="year")
 
             "---"
-            with st.expander("Electricity Usage"):
+            col1, col2 = st.columns(2)
+            with col1:
+                st.write('Electricity:')
+            with col1:
                 for e_usage in e_usages:
                     st.number_input(f"{e_usage}:", min_value=0, format="%i", step=10, key=e_usage)
-            with st.expander("Electricity Cost"):
+            with col1:
                 for e_cost in e_costs:
-                    st.number_input(f"{e_cost}:", min_value=0, format="%i", step=10, key=e_cost)
-            
-            with st.expander("Water Usage"):
+                    st.number_input(f"{e_cost}:", min_value=0.0, max_value=10000.0, step=1e-3, format="%.2f", key=e_cost)
+            with col2:
+                st.write('Water:')
+            with col2:
                 for w_usage in w_usages:
                     st.number_input(f"{w_usage}:", min_value=0, format="%i", step=10, key=w_usage)
-            with st.expander("Water Cost"):
+            with col2:
                 for w_cost in w_costs:
-                    st.number_input(f"{w_cost}:", min_value=0, format="%i", step=10, key=w_cost)
+                    st.number_input(f"{w_cost}:", min_value=0.0, max_value=10000.0, step=1e-3, format="%.2f", key=w_cost)
             
-            with st.expander("DiGi Zahir Cost"):
+            col1, col2 = st.columns(2)
+            with col1:
+                st.write('Telco:')
+            with col1:
                 for digi_zahir in digi_zahirs:
-                    st.number_input(f"{digi_zahir}:", min_value=0, format="%i", step=10, key=digi_zahir)
-            with st.expander("DiGi Ani Cost"):
+                    st.number_input(f"{digi_zahir}:", min_value=0.0, max_value=10000.0, step=1e-3, format="%.2f", key=digi_zahir)
+            with col1:
                 for digi_ani in digi_anis:
-                    st.number_input(f"{digi_ani}:", min_value=0, format="%i", step=10, key=digi_ani)
-            with st.expander("Streamyx Cost"):
+                    st.number_input(f"{digi_ani}:", min_value=0.0, max_value=10000.0, step=1e-3, format="%.2f", key=digi_ani)
+            with col1:
                 for streamyx in streamyxs:
-                    st.number_input(f"{streamyx}:", min_value=0, format="%i", step=10, key=streamyx)
-
-            with st.expander("Comment"):
+                    st.number_input(f"{streamyx}:", min_value=0.0, max_value=10000.0, step=1e-3, format="%.2f", key=streamyx)
+            with col2:
+                st.write('Comments:')
+            with col2:
                 comment = st.text_area("", placeholder="Enter a comment here ...")
 
             "---"
