@@ -33,7 +33,7 @@ streamyxs = ["RM_s"]
 currency = "RM"
 page_title = "Utilities Dashboard"
 page_icon = ":ledger:"                      # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
-layout = "centered"                         # alternatively used "wide"
+layout = "wide"                         # alternatively used "centered"
 # --------------------------------------
 
 st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
@@ -368,7 +368,10 @@ if authentication_status:
             st.plotly_chart(fig_w_2022, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2022):
-                st.table(df_2022)
+                table_2022 = go.Figure(data=[go.Table(header=dict(values=list(df_2022.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2022.key, df_2022.e_cost, df_2022.e_usage, df_2022.w_cost, df_2022.w_usage, 
+                                df_2022.digi_zahir, df_2022.digi_ani, df_2022.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2022, use_container_width=True) 
         
         with st.expander("Click to View Year 2021 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -435,7 +438,10 @@ if authentication_status:
             st.plotly_chart(fig_w_2021, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2021):
-                st.table(df_2021)
+                table_2021 = go.Figure(data=[go.Table(header=dict(values=list(df_2021.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2021.key, df_2021.e_cost, df_2021.e_usage, df_2021.w_cost, df_2021.w_usage, 
+                                df_2021.digi_zahir, df_2021.digi_ani, df_2021.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2021, use_container_width=True) 
         
         with st.expander("Click to View Year 2020 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -502,7 +508,10 @@ if authentication_status:
             st.plotly_chart(fig_w_2020, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2020):
-                st.table(df_2020)
+                table_2020 = go.Figure(data=[go.Table(header=dict(values=list(df_2020.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2020.key, df_2020.e_cost, df_2020.e_usage, df_2020.w_cost, df_2020.w_usage, 
+                                df_2020.digi_zahir, df_2020.digi_ani, df_2020.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2020, use_container_width=True)
         
         with st.expander("Click to View Year 2019 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -567,8 +576,10 @@ if authentication_status:
             st.plotly_chart(fig_w_2019, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2019):
-                st.table(df_2019)
-            
+                table_2019 = go.Figure(data=[go.Table(header=dict(values=list(df_2019.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2019.key, df_2019.e_cost, df_2019.e_usage, df_2019.w_cost, df_2019.w_usage, 
+                                df_2019.digi_zahir, df_2019.digi_ani, df_2019.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2019, use_container_width=True)
         
         with st.expander("Click to View Year 2018 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -593,7 +604,10 @@ if authentication_status:
             st.plotly_chart(fig_cost_2018, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2018):
-                st.table(df_2018)
+                table_2018 = go.Figure(data=[go.Table(header=dict(values=list(df_2018.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2018.key, df_2018.e_cost, df_2018.e_usage, df_2018.w_cost, df_2018.w_usage, 
+                                df_2018.digi_zahir, df_2018.digi_ani, df_2018.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2018, use_container_width=True)
         
         with st.expander("Click to View Year 2017 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -618,7 +632,10 @@ if authentication_status:
             st.plotly_chart(fig_cost_2017, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2017):
-                st.table(df_2017)
+                table_2017 = go.Figure(data=[go.Table(header=dict(values=list(df_2017.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2017.key, df_2017.e_cost, df_2017.e_usage, df_2017.w_cost, df_2017.w_usage, 
+                                df_2017.digi_zahir, df_2017.digi_ani, df_2017.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2017, use_container_width=True)
         
         with st.expander("Click to View Year 2016 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -643,7 +660,10 @@ if authentication_status:
             st.plotly_chart(fig_cost_2016, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2016):
-                st.table(df_2016)
+                table_2016 = go.Figure(data=[go.Table(header=dict(values=list(df_2016.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2016.key, df_2016.e_cost, df_2016.e_usage, df_2016.w_cost, df_2016.w_usage, 
+                                df_2016.digi_zahir, df_2016.digi_ani, df_2016.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2016, use_container_width=True)
         
         with st.expander("Click to View Year 2015 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -668,7 +688,10 @@ if authentication_status:
             st.plotly_chart(fig_cost_2015, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2015):
-                st.table(df_2015)
+                table_2015 = go.Figure(data=[go.Table(header=dict(values=list(df_2015.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2015.key, df_2015.e_cost, df_2015.e_usage, df_2015.w_cost, df_2015.w_usage, 
+                                df_2015.digi_zahir, df_2015.digi_ani, df_2015.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2015, use_container_width=True)
         
         with st.expander("Click to View Year 2014 Data:"):
             col1, col2, col3 = st.columns(3)
@@ -693,7 +716,10 @@ if authentication_status:
             st.plotly_chart(fig_cost_2014, use_container_width=True)
             # Table Dataframe
             if st.checkbox('Show Table Dataframes', key=2014):
-                st.table(df_2014)
+                table_2014 = go.Figure(data=[go.Table(header=dict(values=list(df_2014.columns),fill_color='paleturquoise',align='center'),
+                                cells=dict(values=[df_2014.key, df_2014.e_cost, df_2014.e_usage, df_2014.w_cost, df_2014.w_usage, 
+                                df_2014.digi_zahir, df_2014.digi_ani, df_2014.streamyx],fill_color='lavender',align='left'))])
+                st.plotly_chart(table_2014, use_container_width=True)
                 
     # --- DATA ENTRY ---
     if selected == "Data Entry":
