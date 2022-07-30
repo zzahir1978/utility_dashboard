@@ -91,6 +91,7 @@ if selected == 'Summary':
     col3.metric('Total Utility Cost', f'RM{(total_tnb+total_air+total_tm+total_digi+total_iwk):,.2f}')
 
 if selected == 'TNB':
+    st.header('TNB')
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric('RM', f'{total_tnb:,.2f}')
     col2.metric('No. Of Bills', f'{bill_tnb}')
@@ -118,6 +119,7 @@ if selected == 'TNB':
     st.plotly_chart(fig_table_tnb, use_container_width=True)
 
 if selected == 'Air Selangor':
+    st.header('Air Selangor')
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric('RM', f'{total_air:,.2f}')
     col2.metric('No. Of Bills', f'{bill_air}')
@@ -145,6 +147,7 @@ if selected == 'Air Selangor':
     st.plotly_chart(fig_table_air, use_container_width=True)
 
 if selected == 'DiGi':
+    st.header('DiGi')
     col1, col2, col3 = st.columns(3)
     col1.metric('RM', f'{total_digi:,.2f}')
     col2.metric('No. Of Bills', f'{bill_digi}')
@@ -166,6 +169,7 @@ if selected == 'DiGi':
     st.plotly_chart(fig_table_digi, use_container_width=True)
 
 if selected == 'TM':
+    st.header('TM')
     col1, col2, col3 = st.columns(3)
     col1.metric('RM', f'{total_tm:,.2f}')
     col2.metric('No. Of Bills', f'{bill_tm}')
@@ -187,6 +191,7 @@ if selected == 'TM':
     st.plotly_chart(fig_table_tm, use_container_width=True)
 
 if selected == 'IWK':
+    st.header('IWK')
     col1, col2, col3 = st.columns(3)
     col1.metric('RM', f'{total_iwk:,.2f}')
     col2.metric('No. Of Bills', f'{bill_iwk}')
