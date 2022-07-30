@@ -15,7 +15,7 @@ import os
 
 # ---SETTINGS---
 page_title = "Utilities Dashboard"
-page_icon = ":ledger:"                      # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
+page_icon = ":bulb:"                      # emojis: https://www.webfx.com/tools/emoji-cheat-sheet/
 layout = "wide"                         # alternatively used "centered"
 # --------------------------------------
 
@@ -76,68 +76,54 @@ bill_tm = df_TM['expense'].__len__()
 total_iwk = df_IWK['expense'].sum()
 bill_iwk = df_IWK['expense'].__len__()
 
-selected = option_menu(
-    menu_title = None, 
-    options = ['Summary', 'TNB', 'Air Selangor', 'DiGi', 'TM', 'IWK'], 
-    icons = ['grid-1x2', 'grid-1x2', 'grid-1x2', 'grid-1x2','grid-1x2', 'grid-1x2'], 
-    orientation='horizontal')
+#selected = option_menu(menu_title = None, options = ['Summary', 'TNB', 'Air Selangor', 'DiGi', 'TM', 'IWK'], icons = ['grid-1x2', 'grid-1x2', 'grid-1x2', 'grid-1x2','grid-1x2', 'grid-1x2'], orientation='horizontal')
+with st.sidebar:
+    selected = st.radio('Please select page accordingly:', ('Summary', 'TNB', 'Air Selangor', 'DiGi', 'TM', 'IWK'))
 
 if selected == 'Summary':
     st.header('Summary:')
-    st.subheader(':bulb: Utility')                                  # To select other emoji at https://www.webfx.com/tools/emoji-cheat-sheet/
-    col1, col2, col3, col4, col5 = st.columns(5)
-    col1.write('TNB')
-    col1.metric('RM', f'{total_tnb:,.2f}')
-    col1.metric('No. Of Bills', f'{bill_tnb}')
-    col1.metric('Average Cost', f'{(total_tnb/bill_tnb):,.2f}')
-    col1.metric('kWh', f'{total_kwh:,.0f}')
-    # ----
-    col2.write('Air Selangor')
-    col2.metric('RM', f'{total_air:,.2f}')
-    col2.metric('No. Of Bills', f'{bill_air}')
-    col2.metric('Average Cost', f'{(total_air/bill_air):,.2f}')
-    col2.metric('m3', f'{total_m3:,.0f}')
-    # ----
-    col3.write('Digi')
-    col3.metric('RM', f'{total_digi:,.2f}')
-    col3.metric('No. Of Bills', f'{bill_digi}')
-    col3.metric('Average Cost', f'{(total_digi/bill_digi):,.2f}')
-    col3.metric('TNB Rate (RM/kWh)', f'{(total_tnb/total_kwh):,.2f}')
-    # ----
-    col4.write('TM')
-    col4.metric('RM', f'{total_tm:,.2f}')
-    col4.metric('No. Of Bills', f'{bill_tm}')
-    col4.metric('Average Cost', f'{(total_tm/bill_tm):,.2f}')
-    col4.metric('Air Selangor Rate (RM/m3)', f'{(total_air/total_m3):,.2f}')
-    # ----
-    col5.write('IWK')
-    col5.metric('RM', f'{total_iwk:,.2f}')
-    col5.metric('No. Of Bills', f'{bill_iwk}')
-    col5.metric('Average Cost', f'{(total_iwk/bill_iwk):,.2f}')
-    col5.metric('Total Utility Cost', f'{(total_tnb+total_air+total_tm+total_digi+total_iwk):,.2f}')
+    col1, col2, col3 = st.columns(3)
+    col1.metric('TNB', f'RM{total_tnb:,.2f}')
+    col2.metric('Air Selangor', f'RM{total_air:,.2f}')
+    col3.metric('DiGi', f'RM{total_digi:,.2f}')
+    col1.metric('TM', f'RM{total_tm:,.2f}')
+    col2.metric('IWK', f'RM{total_iwk:,.2f}')
+    col3.metric('Total Utility Cost', f'RM{(total_tnb+total_air+total_tm+total_digi+total_iwk):,.2f}')
 
 if selected == 'TNB':
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric('RM', f'{total_tnb:,.2f}')
+    col2.metric('No. Of Bills', f'{bill_tnb}')
+    col3.metric('Average Cost', f'{(total_tnb/bill_tnb):,.2f}')
+    col4.metric('kWh', f'{total_kwh:,.0f}')
+    col5.metric('TNB Rate (RM/kWh)', f'{(total_tnb/total_kwh):,.2f}')
     # Graph
-            fig_tnb = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-            fig_tnb.add_trace(go.Bar(x = df_TNB['date'], y = df_TNB['expense'],name='RM'))
-            fig_tnb.add_trace(go.Scatter(x = df_TNB['date'], y = df_TNB['usage'],name='kWh',
-                fill='tozeroy',mode='lines',line = dict(color='red', width=1)), secondary_y=True)
-            fig_tnb.add_trace(go.Scatter(x = df_TNB['date'], y = df_TNB['usage'],name='kWh',
-                mode='lines',line = dict(color='black', width=2)), secondary_y=True)
-            fig_tnb.update_layout(height=350,title_text='Annual Electricity Consumption (RM VS kWh)',title_x=0.5,
-                font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",
-                yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
-            fig_tnb.update_annotations(font=dict(family="Helvetica", size=10))
-            fig_tnb.update_xaxes(title_text='Month', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            fig_tnb.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-            st.plotly_chart(fig_tnb, use_container_width=True)
-            # Table
-            fig_table_tnb = go.Figure(data=[go.Table(columnwidth=[1,1,1,1], header=dict(values=list(df_TNB.columns),fill_color='paleturquoise',align='center'),
-                                cells=dict(values=[df_TNB.date, df_TNB.utility, df_TNB.expense, df_TNB.usage],fill_color='lavender',align='center'))])
-            fig_table_tnb.update_layout(margin=dict(t=5,b=5,l=5,r=5))
-            st.plotly_chart(fig_table_tnb, use_container_width=True)
+    fig_tnb = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+    fig_tnb.add_trace(go.Bar(x = df_TNB['date'], y = df_TNB['expense'],name='RM'))
+    fig_tnb.add_trace(go.Scatter(x = df_TNB['date'], y = df_TNB['usage'],name='kWh',
+        fill='tozeroy',mode='lines',line = dict(color='red', width=1)), secondary_y=True)
+    fig_tnb.add_trace(go.Scatter(x = df_TNB['date'], y = df_TNB['usage'],name='kWh',
+        mode='lines',line = dict(color='black', width=2)), secondary_y=True)
+    fig_tnb.update_layout(height=350,title_text='Annual Electricity Consumption (RM VS kWh)',title_x=0.5,
+        font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",
+        yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
+    fig_tnb.update_annotations(font=dict(family="Helvetica", size=10))
+    fig_tnb.update_xaxes(title_text='Month', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+    fig_tnb.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+    st.plotly_chart(fig_tnb, use_container_width=True)
+    # Table
+    fig_table_tnb = go.Figure(data=[go.Table(columnwidth=[1,1,1,1], header=dict(values=list(df_TNB.columns),fill_color='paleturquoise',align='center'),
+                        cells=dict(values=[df_TNB.date, df_TNB.utility, df_TNB.expense, df_TNB.usage],fill_color='lavender',align='center'))])
+    fig_table_tnb.update_layout(margin=dict(t=5,b=5,l=5,r=5))
+    st.plotly_chart(fig_table_tnb, use_container_width=True)
 
 if selected == 'Air Selangor':
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric('RM', f'{total_air:,.2f}')
+    col2.metric('No. Of Bills', f'{bill_air}')
+    col3.metric('Average Cost', f'{(total_air/bill_air):,.2f}')
+    col4.metric('m3', f'{total_m3:,.0f}')
+    col5.metric('Air Selangor Rate (RM/m3)', f'{(total_air/total_m3):,.2f}')
     # Graph
     fig_air = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
     fig_air.add_trace(go.Bar(x = df_AIR['date'], y = df_AIR['expense'],name='RM'))
@@ -159,6 +145,10 @@ if selected == 'Air Selangor':
     st.plotly_chart(fig_table_air, use_container_width=True)
 
 if selected == 'DiGi':
+    col1, col2, col3 = st.columns(3)
+    col1.metric('RM', f'{total_digi:,.2f}')
+    col2.metric('No. Of Bills', f'{bill_digi}')
+    col3.metric('Average Cost', f'{(total_digi/bill_digi):,.2f}')
     # Graph
     fig_digi = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
     fig_digi.add_trace(go.Bar(x = df_DIGI['date'], y = df_DIGI['expense'],name='RM'))
@@ -176,6 +166,10 @@ if selected == 'DiGi':
     st.plotly_chart(fig_table_digi, use_container_width=True)
 
 if selected == 'TM':
+    col1, col2, col3 = st.columns(3)
+    col1.metric('RM', f'{total_tm:,.2f}')
+    col2.metric('No. Of Bills', f'{bill_tm}')
+    col3.metric('Average Cost', f'{(total_tm/bill_tm):,.2f}')
     # Graph
     fig_tm = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
     fig_tm.add_trace(go.Bar(x = df_TM['date'], y = df_TM['expense'],name='RM'))
@@ -193,6 +187,10 @@ if selected == 'TM':
     st.plotly_chart(fig_table_tm, use_container_width=True)
 
 if selected == 'IWK':
+    col1, col2, col3 = st.columns(3)
+    col1.metric('RM', f'{total_iwk:,.2f}')
+    col2.metric('No. Of Bills', f'{bill_iwk}')
+    col3.metric('Average Cost', f'{(total_iwk/bill_iwk):,.2f}')
     # Table
     fig_table_iwk = go.Figure(data=[go.Table(columnwidth=[1,1,1,1], header=dict(values=list(df_IWK.columns),fill_color='paleturquoise',align='center'),
                         cells=dict(values=[df_IWK.date, df_IWK.utility, df_IWK.expense, df_IWK.usage],fill_color='lavender',align='center'))])
