@@ -206,6 +206,16 @@ if selected == 'IWK':
     col1.metric('RM', f'{total_iwk:,.2f}')
     col2.metric('No. Of Bills', f'{bill_iwk}')
     col3.metric('Average Cost', f'{(total_iwk/bill_iwk):,.2f}')
+    # Graph
+    fig_iwk = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
+    fig_iwk.add_trace(go.Bar(x = df_IWK['date'], y = df_IWK['expense'],name='RM'))
+    fig_iwk.update_layout(height=350,title_text='Annual IWK Consumption (RM)',title_x=0.5,
+        font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",
+        yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
+    fig_iwk.update_annotations(font=dict(family="Helvetica", size=10))
+    fig_iwk.update_xaxes(title_text='Month', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+    fig_iwk.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
+    st.plotly_chart(fig_iwk, use_container_width=True)
     # Table
     fig_table_iwk = go.Figure(data=[go.Table(columnwidth=[1,1,1,1], header=dict(values=list(df_IWK.columns),fill_color='paleturquoise',align='center'),
                         cells=dict(values=[df_IWK.date, df_IWK.utility, df_IWK.expense, df_IWK.usage],fill_color='lavender',align='center'))])
