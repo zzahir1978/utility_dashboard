@@ -90,15 +90,14 @@ if selected == 'Summary':
     col2.metric('IWK', f'RM{total_iwk:,.2f}')
     col3.metric('Total Utility Cost', f'RM{(total_tnb+total_air+total_tm+total_digi+total_iwk):,.2f}')
     # Graph
-    fig_sum = make_subplots(shared_xaxes=True, specs=[[{'secondary_y': True}]])
-    fig_sum.add_trace(go.Bar(x = ['TNB','Air Selangor','Digi','TM','IWK'], y = [total_tnb,total_air,total_digi,total_tm,total_iwk],name='RM'))
-    fig_sum.update_layout(height=350,title_text='Total Utility Cost By Types (RM)',title_x=0.5,
-        font=dict(family="Helvetica", size=10),xaxis=dict(tickmode="array"),plot_bgcolor="rgba(0,0,0,0)",
-        yaxis=(dict(showgrid=False)),yaxis_title=None,showlegend=False)
-    fig_sum.update_annotations(font=dict(family="Helvetica", size=10))
-    fig_sum.update_xaxes(title_text='Month', showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-    fig_sum.update_yaxes(showgrid=False, zeroline=False, showline=True, linewidth=2, linecolor='black')
-    st.plotly_chart(fig_sum, use_container_width=True)
+    labels = ['TNB','Air Selangor','Streamyx','DiGi','IWK']
+    values = [total_tnb, total_air, total_tm, total_digi, total_iwk]
+
+    # Use `hole` to create a donut-like pie chart
+    fig_main = go.Figure(data=[go.Pie(labels=labels, values=values, hole=0.6,textinfo='label+percent')])
+    fig_main.update_layout(title_text='',title_x=0.5,font=dict(family="Helvetica", size=10),showlegend=False,
+                            annotations=[dict(text='Utilities Cost', x=0.5, y=0.5, font_size=20, showarrow=False)])
+    st.plotly_chart(fig_main, use_container_width=True)
 
 if selected == 'TNB':
     st.header('TNB')
