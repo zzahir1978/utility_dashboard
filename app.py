@@ -23,7 +23,7 @@ st.set_page_config(page_title=page_title, page_icon=page_icon, layout=layout)
 st.title(page_icon + " " + page_title)
 
 # Utility Database Interface
-DETA_KEY = 'c0jo61nr_Fk3geHfjZYDv53FuxFYaEPjhitTawRVz'              
+DETA_KEY = st.secrets['deta_key']           
 deta = Deta(DETA_KEY)
 db2 = deta.Base('utility_db')
 
